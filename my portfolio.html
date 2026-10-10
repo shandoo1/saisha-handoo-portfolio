@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>saisha handoo · product designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffffff;
+    --ink:#0a0a0a;
+    --muted:#8a8a8a;
+    --line:#e6e6e6;
+    --line-2:#d4d4d4;
+    --max:700px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    font-size:16px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    text-transform:lowercase;
+    overflow-x:hidden;
+  }
+  pre, code, .no-lc{ text-transform:none; }
+  @media (hover:hover) and (pointer:fine){
+    body, a, button, [role="button"]{ cursor:none; }
+  }
+  h1,h2,h3,h4{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  p{margin:0;}
+  a{color:inherit; text-decoration:none;}
+  ul, ol{margin:0; padding:0; list-style:none;}
+  button{font-family:inherit;}
+  :where(#main-view) > section{
+    padding:6rem 4.5vw;
+    max-width:1360px;
+    margin:0 auto;
+  }
+  .col{max-width:var(--max);}
+  .count{color:var(--muted); font-size:0.85rem; white-space:nowrap;}
+  .section-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    gap:2rem; margin-bottom:3rem; border-bottom:1px solid var(--line); padding-bottom:1.3rem;
+  }
+  .section-head h2{ font-size:clamp(1.5rem,3vw,2.1rem); }
+  .doodle{
+    font-family:'Fraunces'; font-style:italic; font-weight:400;
+    color:var(--muted); margin-left:0.35em;
+  }
+
+  /* ---------- CURSOR ---------- */
+  #cursor-dot{
+    position:fixed; top:0; left:0;
+    width:8px; height:8px;
+    background:var(--ink);
+    border-radius:50%;
+    pointer-events:none;
+    z-index:9999;
+    transform:translate(-50%,-50%);
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.85rem; font-family:'Inter'; color:var(--bg);
+    transition:width .18s ease, height .18s ease, background .18s ease, border-radius .18s ease;
+    will-change:transform;
+  }
+  #cursor-dot.grow{ width:34px; height:34px; background:var(--ink); border-radius:50%; }
+  @media (hover:none), (pointer:coarse){ #cursor-dot{ display:none; } }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:60;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1.3rem 4.5vw;
+    background:rgba(255,255,255,0.86);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  nav .brand{
+    font-family:'Fraunces'; font-size:1rem;
+    cursor:pointer;
+  }
+  nav .brand:focus-visible{
+    outline:1px solid var(--ink);
+    outline-offset:4px;
+  }
+  nav .thought{
+    position:absolute; left:50%; transform:translateX(-50%);
+    font-size:0.85rem; color:var(--muted); text-align:center;
+    display:flex; gap:0.4em;
+  }
+  nav .thought #thought-word{ color:var(--ink); transition:opacity .3s ease; }
+  nav .thought #thought-word.fade{ opacity:0; }
+  nav .links{ display:flex; gap:1.8rem; }
+  nav .links a{ font-size:0.9rem; }
+  @media (max-width:1100px){ nav .thought{ display:none; } }
+
+  /* ---------- BASED IN ---------- */
+  .based-in{
+    padding:8.5rem 4.5vw 0;
+    max-width:1360px; margin:0 auto;
+    font-size:0.95rem; color:var(--muted);
+  }
+  #cities-track{ display:inline-flex; flex-wrap:wrap; gap:0 0.55em; }
+  .city{ color:var(--muted); opacity:0; transition:opacity .5s ease; }
+  .city.show{ opacity:1; }
+  .city.current{ color:var(--ink); font-weight:600; }
+
+  /* ---------- HERO ---------- */
+  #hero{
+    position:relative;
+    padding:1.5rem 4.5vw 5.5rem;
+    min-height:70vh;
+    display:grid;
+    grid-template-columns:minmax(0,1.35fr) minmax(220px,0.85fr);
+    align-items:center;
+    column-gap:4vw;
+    max-width:1360px; margin:0 auto;
+    overflow:visible;
+  }
+  .hero-lines{ position:relative; z-index:1; min-width:0; }
+  .hero-line-1{
+    font-size:clamp(1.3rem,2.6vw,1.8rem);
+    opacity:0; transform:translateY(10px);
+    animation:heroIn .7s ease forwards 0.15s;
+  }
+  .hero-line-2{
+    font-size:clamp(2rem,4.4vw,3.5rem);
+    max-width:22ch; margin-top:0.35rem; line-height:1.16;
+    opacity:0; transform:translateY(14px);
+    animation:heroIn .8s ease forwards 0.75s;
+  }
+  @keyframes heroIn{ to{ opacity:1; transform:translateY(0); } }
+
+  .hero-visual{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-self:end;
+    padding:0.5rem 1.4rem 0 0;
+    z-index:1;
+  }
+  .hero-photo{
+    position:relative;
+    width:min(280px, 28vw);
+    height:min(280px, 28vw);
+    border-radius:50%;
+    overflow:hidden;
+    flex-shrink:0;
+    background:#f3f3f3;
+  }
+  .hero-photo img{
+    position:absolute;
+    width:148%;
+    height:auto;
+    left:-38%;
+    bottom:0;
+    display:block;
+  }
+  #why-wrap{
+    margin-top:0.85rem;
+    min-height:3.2rem;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+  }
+  #why-float{
+    position:relative;
+    font-family:'Fraunces'; font-style:italic; font-size:clamp(2rem,5vw,3.6rem);
+    color:var(--line-2);
+    z-index:0; pointer-events:none; user-select:none;
+    line-height:1;
+  }
+  /* ---------- AUDIENCE TABS ---------- */
+  #audience{ padding-top:0; }
+  #audience .prompt{ font-size:1.3rem; color:var(--muted); margin-bottom:1.4rem; }
+  #tab-content p + p{ margin-top:0.9rem; }
+  .tab-row{ display:flex; flex-wrap:wrap; gap:0.6rem; margin-bottom:2rem; }
+  .tab-btn{
+    background:none; border:1px solid var(--line-2); color:var(--ink);
+    padding:0.55rem 1.1rem; font-size:0.88rem; border-radius:999px; cursor:pointer;
+    transition:background .2s ease, color .2s ease;
+  }
+  .tab-btn.active{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+  .tab-btn:focus-visible{ outline:1px solid var(--ink); outline-offset:3px; }
+  #tab-content{ max-width:var(--max); min-height:5rem; color:var(--muted); font-size:1.02rem; }
+
+  .code-editor{
+    background:#111111;
+    color:#d4d4d4;
+    border-radius:6px;
+    overflow:hidden;
+    border:1px solid #1c1c1c;
+    max-width:36rem;
+  }
+  .code-body{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:0 1rem;
+    padding:1.15rem 1.1rem 1.15rem 0.85rem;
+    font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size:0.82rem;
+    line-height:1.75;
+    overflow-x:auto;
+  }
+  .code-gutter{
+    color:#5c5c5c;
+    text-align:right;
+    user-select:none;
+    padding-top:0.05rem;
+  }
+  .code-body pre{
+    margin:0; background:none; padding:0; overflow:visible;
+    font-family:inherit; font-size:inherit; line-height:inherit;
+  }
+  .tok-kw{ color:#569cd6; }
+  .tok-var{ color:#9cdcfe; }
+  .tok-prop{ color:#9cdcfe; }
+  .tok-str{ color:#ce9178; }
+  .tok-num{ color:#b5cea8; }
+  .tok-cm{ color:#6a9955; font-style:italic; }
+  .tok-op{ color:#d4d4d4; }
+  .tok-p{ color:#808080; }
+  .tok-bool{ color:#569cd6; }
+
+  /* ---------- VALUES ---------- */
+  .item-head{ display:flex; align-items:baseline; gap:1.6rem; font-size:1.2rem; }
+  .item-head .num{ flex-shrink:0; width:2rem; font-size:1rem; color:var(--muted); }
+  .values{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); column-gap:4vw; }
+  .values li{ padding:1.3rem 0 1.4rem; border-top:1px solid var(--line); }
+  .values li:nth-child(-n+2){ padding-top:0; border-top:0; }
+  .values p{ margin-top:0.6rem; padding-left:3.6rem; max-width:52ch; color:var(--muted); }
+
+  /* ---------- WORK GRID ---------- */
+  .case-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:1.2rem; }
+  .case-card{
+    position:relative; border:1px solid var(--line); min-height:168px;
+    padding:1.5rem 1.6rem; display:flex; flex-direction:column; justify-content:flex-end;
+    overflow:hidden; cursor:pointer;
+  }
+  .card-stamp{
+    position:absolute; top:1.1rem; right:1.2rem; z-index:1;
+    font-family:'Fraunces'; font-style:italic; font-size:1.15rem;
+    color:var(--line-2); transform:rotate(8deg); pointer-events:none;
+  }
+  .case-card.wide{ grid-column:span 2; }
+  .case-card .bg-loop{
+    position:absolute; inset:0; opacity:0;
+    background:repeating-linear-gradient(115deg, #f2f2f2 0 2px, #fff 2px 26px);
+    background-size:200% 200%;
+    transition:opacity .4s ease;
+    animation:loopMove 6s linear infinite paused;
+  }
+  @keyframes loopMove{ from{background-position:0 0;} to{background-position:200% 200%;} }
+  .case-card:hover .bg-loop{ opacity:1; animation-play-state:running; }
+  .case-card .name{ position:relative; font-size:1.6rem; z-index:1; }
+  .case-card .tag{ position:relative; font-size:0.8rem; color:var(--muted); z-index:1; margin-bottom:0.4rem; }
+  .case-card .tagline{
+    position:relative; z-index:1; max-width:36ch; font-size:0.9rem; color:var(--muted);
+    margin-top:0.45rem;
+  }
+
+  .case-card.has-thumb{
+    min-height:0;
+    padding:0;
+    justify-content:flex-start;
+  }
+  .case-card.has-thumb .case-media{
+    position:relative;
+    height:220px;
+    overflow:hidden;
+    background:#f4f4f4;
+  }
+  .case-card.has-thumb .case-media img{
+    width:100%; height:100%;
+    object-fit:cover;
+    object-position:center;
+    transform:scale(1) translateY(0);
+    transition:transform .7s cubic-bezier(0.22,1,0.36,1);
+  }
+  .case-card.has-thumb .case-copy{
+    position:relative; z-index:2;
+    display:flex; flex-direction:column; align-items:flex-start;
+    padding:1.4rem 1.6rem 1.6rem;
+  }
+  .case-card.has-thumb .tag{ margin-bottom:0.25rem; }
+  .case-card.has-thumb .tagline{
+    position:absolute; left:1.6rem; bottom:calc(100% - 0.6rem);
+    width:max-content; max-width:min(280px, calc(100% - 3.2rem));
+    max-height:none; overflow:visible;
+    background:var(--ink); color:var(--bg);
+    font-size:0.82rem; line-height:1.45;
+    padding:0.6rem 0.85rem; border-radius:6px;
+    opacity:0; transform:translateY(6px);
+    transition:opacity .25s ease, transform .3s cubic-bezier(0.22,1,0.36,1);
+    pointer-events:none;
+  }
+  .case-card.has-thumb:hover .tagline,
+  .case-card.has-thumb:focus-visible .tagline{
+    max-height:none; margin-top:0;
+    opacity:1; transform:translateY(0);
+  }
+  @media (hover:none), (pointer:coarse){
+    .case-card.has-thumb .tagline{
+      position:static; width:auto; max-width:32ch;
+      background:none; color:var(--muted); padding:0; margin-top:0.35rem;
+      opacity:1; transform:none;
+    }
+  }
+  .case-card.wide.has-thumb .case-media{
+    height:220px;
+    background:#fff;
+  }
+  .case-card.wide.has-thumb .case-media img{ object-fit:contain; }
+  @media (hover:hover) and (pointer:fine){
+    .case-card.has-thumb:hover .case-media img,
+    .case-card.has-thumb:focus-visible .case-media img{
+      transform:scale(1.05) translateY(-3px);
+    }
+  }
+  .case-card:focus-visible{
+    outline:1px solid var(--ink);
+    outline-offset:3px;
+  }
+
+  /* ---------- CASE VIEWER (scroll-driven) ---------- */
+  #case-viewer{ margin-top:4rem; display:none; }
+  #case-viewer.open{ display:block; }
+  .cv-back{ display:inline-block; margin-bottom:2rem; cursor:pointer; }
+  .cv-title{ font-family:inherit; font-weight:400; letter-spacing:0; font-size:clamp(1.7rem,3.6vw,2.6rem); margin-bottom:3rem; border-bottom:1px solid var(--line); padding-bottom:1.6rem; }
+  .cv-title small{ display:block; font-size:0.55em; color:var(--muted); }
+  .cv-step{
+    display:grid; grid-template-columns:minmax(0,1fr) min(36%, 23rem);
+    column-gap:4vw; align-items:start;
+    padding:2.4rem 0; border-top:1px solid var(--line);
+    opacity:0; transform:translateY(24px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .cv-step.in{ opacity:1; transform:translateY(0); }
+  .cv-step .step-label{ display:flex; gap:0.8rem; align-items:baseline; color:var(--muted); font-size:0.85rem; margin-bottom:0.7rem; }
+  .cv-step .step-label .n{ font-family:'Fraunces'; font-style:italic; color:var(--ink); }
+  .cv-step .step-body{ max-width:62ch; font-size:1.05rem; }
+  .cv-step.solution{ background:#fafafa; margin:0 -1.8rem; padding:2.4rem 1.8rem; border-top:none; }
+  .cv-step.solution .step-label{ color:var(--ink); font-weight:600; }
+  .cv-step .step-body p + p{ margin-top:1rem; }
+  .cv-inline-link{ border-bottom:1px solid var(--ink); font-size:0.95rem; }
+  .cv-inline-link:focus-visible{ outline:1px solid var(--ink); outline-offset:4px; }
+  .cv-media{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:1rem; }
+  .cv-fig{ grid-column:1 / -1; margin:0; }
+  .cv-feature > .cv-fig:not(:first-child){ grid-column:auto; }
+  .cv-fig a{ display:block; }
+  .cv-fig img, .cv-fig video{
+    display:block; width:100%; height:auto; max-height:16rem;
+    object-fit:contain; background:#fafafa;
+    border:1px solid var(--line);
+  }
+  .cv-feature > .cv-fig:not(:first-child) img{ aspect-ratio:4 / 3; max-height:none; }
+  .cv-video video{ height:16rem; object-fit:cover; background:var(--ink); pointer-events:none; }
+  .cv-tiles{ grid-column:1 / -1; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:1rem; align-items:start; }
+  .cv-stack{ display:flex; flex-direction:column; gap:1rem; }
+  .cv-tiles img, .cv-tall img{ max-height:none; }
+  .cv-fig a:focus-visible{ outline:1px solid var(--ink); outline-offset:3px; }
+  .cv-explore{
+    margin-top:2.4rem; padding-top:1.8rem;
+    border-top:1px dashed var(--line-2);
+  }
+  .cv-explore-label{
+    font-family:'Fraunces'; font-style:italic; font-size:1.2rem;
+    margin-bottom:0.7rem;
+  }
+  .cv-explore p{ color:var(--muted); font-size:0.98rem; }
+  @media (max-width:720px){
+    .cv-step{ grid-template-columns:1fr; }
+    .cv-media{ margin-top:1.6rem; }
+  }
+  .cv-links{
+    display:flex; flex-wrap:wrap; gap:0.8rem 2rem;
+    padding:2rem 0; border-top:1px solid var(--line);
+  }
+  .cv-links a{
+    font-size:0.95rem;
+    border-bottom:1px solid var(--ink); padding-bottom:0.1rem;
+  }
+  .cv-links a:focus-visible{ outline:1px solid var(--ink); outline-offset:4px; }
+  .cv-soon{ max-width:var(--max); padding:0.4rem 0 3rem; }
+  .cv-soon .serif-note{ margin-bottom:0.6rem; }
+  .cv-soon-mark{
+    font-family:'Fraunces'; font-style:italic;
+    font-size:clamp(2rem, 5vw, 3.2rem);
+    letter-spacing:0.06em;
+    margin:0.2rem 0 1.6rem;
+  }
+  .cv-soon p + p{ margin-top:1rem; }
+  .cv-soon a{ border-bottom:1px solid var(--ink); }
+  .cv-built{ margin-top:1rem; padding-top:2rem; border-top:1px solid var(--line); font-size:0.85rem; color:var(--muted); }
+  .cv-built b{ color:var(--ink); font-weight:500; }
+
+  /* ---------- GIFT / LESSONS ---------- */
+  #gift .gift-lead{ font-size:1.05rem; }
+  #gift .gift-sub{ font-size:0.9rem; color:var(--muted); margin-top:0.4rem; }
+  #gift .tool{
+    position:relative;
+    margin-top:2.4rem; border:1px solid var(--line);
+    padding:clamp(1.5rem, 4vw, 2.6rem);
+    min-height:0;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  #gift .tool::after{
+    content:"♡"; position:absolute; top:1rem; right:1.2rem;
+    font-family:'Fraunces'; font-style:italic; color:var(--line-2);
+    transform:rotate(8deg); pointer-events:none;
+  }
+  #gift .tool-hook{
+    font-family:'Fraunces'; font-size:clamp(1.5rem, 3.2vw, 2.2rem);
+    line-height:1.2; margin-bottom:1.8rem;
+  }
+  #gift .tool-result{ display:none; }
+  #gift .tool.has-result .tool-idle{ display:none; }
+  #gift .tool.has-result .tool-result{ display:block; }
+  #gift .c-swap{
+    transition:opacity .28s ease, transform .38s cubic-bezier(0.22,1,0.36,1);
+  }
+  #gift .c-swap.leaving{ opacity:0; transform:translateY(-8px); }
+  #gift .c-swap.entering{ opacity:0; transform:translateY(8px); transition:none; }
+  .c-label{
+    text-transform:uppercase; letter-spacing:0.16em;
+    font-size:0.72rem; color:var(--muted); margin-bottom:1rem;
+  }
+  #gift .c-text{
+    font-family:'Fraunces'; font-style:italic;
+    font-size:clamp(1.6rem, 3.8vw, 2.7rem); line-height:1.18;
+    max-width:24ch;
+  }
+  #gift .c-invite{ margin-top:1.2rem; font-size:0.9rem; color:var(--muted); }
+  #gift .c-actions{
+    display:flex; flex-wrap:wrap; align-items:baseline; gap:0.8rem 2rem;
+    margin-top:2.2rem;
+  }
+  #gift .c-link{
+    background:none; border:0; border-bottom:1px solid var(--ink); padding:0 0 0.1rem;
+    color:var(--ink); font-size:0.92rem; cursor:pointer;
+  }
+  #gift .c-link.quiet{ color:var(--muted); border-bottom-color:var(--line-2); font-size:0.85rem; }
+  #gift .c-link:focus-visible{ outline:1px solid var(--ink); outline-offset:4px; }
+  .btn{
+    background:var(--ink); color:var(--bg); border:0; border-radius:999px;
+    padding:0.7rem 1.3rem; font-size:0.88rem; cursor:pointer;
+  }
+  .btn:focus-visible{ outline:1px solid var(--ink); outline-offset:4px; }
+
+  /* ---------- RABBIT HOLES PREVIEW ---------- */
+  .rh-preview-list{
+    display:flex; flex-wrap:wrap; gap:0.3rem 0;
+    font-family:'Fraunces'; font-size:clamp(1.25rem, 2.4vw, 1.6rem);
+  }
+  .rh-preview-list li + li::before{ content:"…"; color:var(--muted); margin:0 0.6em; }
+  .rh-journal{ margin-top:2.2rem; max-width:min(100%, 36rem); }
+  .rh-journal video{
+    display:block; width:100%; height:auto; max-height:22rem;
+    object-fit:contain; background:#fafafa;
+    border:1px solid var(--line);
+    pointer-events:none;
+  }
+  .rh-journal figcaption{
+    margin-top:0.7rem;
+    font-family:'Fraunces'; font-style:italic;
+    font-size:0.95rem; color:var(--muted);
+  }
+  .rh-more{ margin-top:1.6rem; font-size:0.9rem; color:var(--muted); }
+  .text-btn{
+    background:none; border:0; padding:0; font:inherit; color:var(--ink);
+    border-bottom:1px solid var(--ink); cursor:pointer;
+  }
+  .text-btn:focus-visible{ outline:1px solid var(--ink); outline-offset:4px; }
+
+  /* ---------- CONTACT ---------- */
+  .together-row{ display:flex; flex-wrap:wrap; gap:0.8rem; margin:2rem 0 2.6rem; }
+  .together-item{
+    position:relative; border:1px solid var(--line-2); border-radius:999px;
+    padding:0.7rem 1.3rem; font:inherit; font-size:0.92rem; color:var(--ink);
+    background:none; text-align:left;
+  }
+  .together-item:focus-visible{ outline:1px solid var(--ink); outline-offset:3px; }
+  .together-item .reveal{
+    display:block; line-height:1.5;
+    position:absolute; top:110%; left:0; width:max-content; max-width:280px;
+    background:var(--ink); color:var(--bg); font-size:0.82rem; padding:0.7rem 0.9rem;
+    border-radius:6px; opacity:0; transform:translateY(-6px); pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease; z-index:5;
+  }
+  .together-item:hover .reveal,
+  .together-item:focus-visible .reveal,
+  .together-item[aria-expanded="true"] .reveal{ opacity:1; transform:translateY(0); }
+  #contact .find-out{ margin-bottom:0.8rem; }
+  #contact .cta-row{ display:flex; align-items:center; gap:2rem; flex-wrap:wrap; }
+  #contact .talk{ font-family:'Fraunces'; font-style:italic; font-size:1.35rem; border-bottom:1px solid var(--ink); padding-bottom:0.1rem; }
+  #contact .sub{ font-size:0.9rem; color:var(--muted); }
+
+  footer{
+    padding:2.2rem 4.5vw 3rem; color:var(--muted); font-size:0.82rem;
+    display:flex; justify-content:space-between; border-top:1px solid var(--line);
+  }
+
+  /* ---------- RABBIT HOLES PAGE ---------- */
+  #rabbitholes-view{ display:none; min-height:100vh; padding:8.5rem 4.5vw 6rem; max-width:1360px; margin:0 auto; overflow-x:hidden; }
+  .back-link{
+    font-size:0.85rem; color:var(--muted);
+    background:none; border:0; padding:0; font-family:inherit;
+  }
+  .back-link:hover{ color:var(--ink); }
+  .back-link:focus-visible{ outline:1px solid var(--ink); outline-offset:4px; }
+  .rh-head h1{ font-size:clamp(1.8rem,4vw,2.8rem); margin-top:1.2rem; }
+  .rh-head p{ color:var(--muted); margin-top:0.6rem; }
+  .rh-field{
+    position:relative;
+    margin-top:3rem;
+    width:100%;
+  }
+  .rh-topic{
+    position:absolute;
+    left:0; top:0;
+    will-change:transform;
+    max-width:min(42vw, 16rem);
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .rh-topic:focus-visible{
+    outline:1px solid var(--ink);
+    outline-offset:6px;
+  }
+  .rh-word{
+    display:inline-flex;
+    align-items:baseline;
+    gap:0.35em;
+    font-family:'Fraunces';
+    font-size:1.45rem;
+    line-height:1.2;
+    transform-origin:left center;
+    transition:transform .45s cubic-bezier(0.22,1,0.36,1), color .3s ease;
+  }
+  .rh-topic:nth-child(3n) .rh-word{ font-size:1.75rem; }
+  .rh-topic:nth-child(5n) .rh-word{ font-size:1.3rem; }
+  .rh-mark{
+    display:inline-block;
+    font-family:'Fraunces';
+    font-style:italic;
+    font-size:0.72em;
+    color:var(--muted);
+    opacity:0;
+    transform:rotate(-50deg) scale(0.5) translateY(4px);
+    transition:opacity .35s ease, transform .5s cubic-bezier(0.22,1,0.36,1), color .3s ease;
+  }
+  .rh-question{
+    display:block; font-family:'Inter'; font-size:0.78rem; color:var(--muted);
+    max-width:22ch; max-height:0; opacity:0; overflow:hidden;
+    transform:translateY(-4px);
+    transition:max-height .4s ease, opacity .35s ease, transform .4s ease, margin .35s ease;
+  }
+  .rh-topic.is-on .rh-word,
+  .rh-topic:focus-visible .rh-word{ transform:scale(1.08); color:#000; }
+  .rh-topic.is-on .rh-mark,
+  .rh-topic:focus-visible .rh-mark{ opacity:1; color:var(--ink); transform:rotate(12deg) scale(1) translateY(0); }
+  .rh-topic.is-on .rh-question,
+  .rh-topic:focus-visible .rh-question{ max-height:5rem; opacity:1; margin-top:0.45rem; transform:translateY(0); }
+  @media (hover:hover) and (pointer:fine){
+    .rh-topic:hover .rh-word{ transform:scale(1.08); color:#000; }
+    .rh-topic:hover .rh-mark{ opacity:1; color:var(--ink); transform:rotate(12deg) scale(1) translateY(0); }
+    .rh-topic:hover .rh-question{ max-height:5rem; opacity:1; margin-top:0.45rem; transform:translateY(0); }
+  }
+
+  /* ---------- OVERLAYS ---------- */
+  .overlay{
+    position:fixed; inset:0; z-index:200;
+    overflow-y:auto; overflow-x:hidden;
+    padding:6rem 4.5vw;
+    background:rgba(255,255,255,0.97);
+    opacity:0; visibility:hidden;
+    transition:opacity .3s ease, visibility 0s linear .3s;
+  }
+  .overlay.open{ opacity:1; visibility:visible; transition:opacity .3s ease; }
+  .overlay-panel{
+    max-width:var(--max); margin:0 auto;
+    transform:translateY(12px);
+    transition:transform .5s cubic-bezier(0.22,1,0.36,1);
+  }
+  .overlay.open .overlay-panel{ transform:none; }
+  .serif-note{ font-family:'Fraunces'; font-style:italic; color:var(--muted); }
+
+  .rh-d-q{ font-size:1.1rem; margin-bottom:2.4rem; }
+  .rh-d-label{ font-size:0.85rem; color:var(--muted); margin-bottom:0.6rem; }
+  .rh-d-body{ max-width:60ch; font-size:1.05rem; }
+
+  /* ---------- GIFT: SEND ---------- */
+  #gift .c-send-row{ margin-top:1.8rem; }
+  #gift .c-received{
+    margin-top:1.8rem; font-size:0.92rem;
+    opacity:0; transform:translateY(4px);
+    transition:opacity .4s ease, transform .5s cubic-bezier(0.22,1,0.36,1);
+  }
+  #gift .c-received:empty{ display:none; }
+  #gift .c-received .quiet{ color:var(--muted); }
+  #gift .tool.sent .c-send-row{ display:none; }
+  #gift .tool.sent .c-received{ opacity:1; transform:none; }
+
+  .send-text{ font-family:'Fraunces'; font-style:italic; font-size:1.2rem; max-width:40ch; }
+  .send-field{ display:block; margin-top:2.4rem; }
+  .send-field span{ display:block; font-size:0.85rem; color:var(--muted); }
+  .send-field input, .send-field textarea{
+    display:block; width:100%; margin-top:0.35rem;
+    padding:0.55rem 0; border:0; border-bottom:1px solid var(--line-2); border-radius:0;
+    background:none; color:var(--ink);
+    font-family:'Inter', sans-serif; font-size:1.05rem; line-height:1.5;
+    text-transform:none; resize:vertical;
+    transition:border-color .2s ease;
+  }
+  .send-field input::placeholder, .send-field textarea::placeholder{ color:var(--line-2); }
+  .send-field input:focus, .send-field textarea:focus{ outline:none; border-bottom-color:var(--ink); }
+  .send-actions{ display:flex; flex-wrap:wrap; align-items:center; gap:0.8rem 2rem; margin-top:2.4rem; }
+  .send-note{ font-size:0.85rem; color:var(--muted); }
+
+  /* ---------- ENVELOPE ---------- */
+  .envelope{
+    display:inline-flex; align-items:center; gap:1.2rem;
+    margin-top:2.4rem; padding:0.5rem 0;
+    background:none; border:0; color:var(--ink); font:inherit;
+    opacity:0; transform:translateY(10px);
+    animation:heroIn .8s ease forwards 1.3s;
+  }
+  .envelope:focus-visible{ outline:1px solid var(--ink); outline-offset:6px; }
+  .env{
+    position:relative; display:block; width:132px; height:86px;
+    perspective:420px;
+    transform:rotate(-3deg);
+    transition:transform .55s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .envelope:hover .env, .envelope:focus-visible .env{ transform:rotate(-1deg) translateY(-3px); }
+  .env svg{ position:absolute; left:0; top:0; width:100%; height:auto; overflow:visible; }
+  .env-shape{ fill:var(--bg); stroke:var(--ink); stroke-width:1.3; stroke-linejoin:round; }
+  .env-stamp{ stroke-width:0.9; stroke-dasharray:2 1.4; }
+  .env-line{ fill:none; stroke:var(--muted); stroke-width:1; stroke-linecap:round; }
+  .env-ink{ fill:var(--ink); font-family:'Fraunces', serif; font-style:italic; }
+  .env-seal{ fill:var(--bg); }
+  .env-back{ z-index:1; }
+  .env-paper{
+    position:absolute; left:10px; right:10px; top:6px; height:66px; z-index:2;
+    background:var(--bg); border:1px solid var(--ink);
+    opacity:0;
+    transition:transform .5s cubic-bezier(0.34,1.45,0.64,1) .2s, opacity 0s linear .45s;
+  }
+  .envelope.is-open .env-paper{ opacity:1; transition:transform .5s cubic-bezier(0.34,1.45,0.64,1) .2s, opacity 0s linear .15s; }
+  .env-paper svg{ position:static; width:100%; }
+  .env-front{ z-index:3; }
+  .env-flap{
+    z-index:4; transform-origin:50% 2px;
+    transition:transform .4s cubic-bezier(0.5,0,0.3,1), z-index 0s linear .2s;
+  }
+  .envelope:hover .env-flap, .envelope:focus-visible .env-flap{ transform:rotateX(24deg); }
+  .envelope.is-open .env-flap{ transform:rotateX(180deg); z-index:0; }
+  .envelope.is-open .env-paper{ transform:translateY(-38px) rotate(-2deg); opacity:1; }
+  .env-hint{ font-family:'Fraunces'; font-style:italic; font-size:0.95rem; color:var(--muted); }
+  .env-arrow{ display:inline-block; animation:nudge 1.8s ease-in-out infinite; }
+  @keyframes nudge{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(4px); } }
+
+  /* ---------- LETTER ---------- */
+  .letter-sheet{
+    padding:clamp(2.2rem, 5vw, 3.2rem) clamp(1.4rem, 3.5vw, 2.4rem) clamp(1.4rem, 3.5vw, 2.4rem);
+    background:var(--bg); border:1px solid var(--line);
+    transform-origin:50% 0;
+    transform:translateY(70px) scale(0.84) rotate(-3deg);
+    clip-path:inset(0 0 90% 0);
+    transition:transform .75s cubic-bezier(0.34,1.3,0.64,1), clip-path .65s cubic-bezier(0.22,1,0.36,1);
+  }
+  #letter.open .letter-sheet{ transform:rotate(-0.5deg); clip-path:inset(-2rem); }
+  .letter-sheet p + p{ margin-top:1.7rem; }
+  .letter-route{ font-size:0.85rem; color:var(--muted); margin-top:1.7rem; }
+  .letter-route span{ margin:0 0.3em; color:var(--line-2); }
+  .letter-sheet .section-head{ margin-bottom:2.2rem; }
+  .letter-sheet .serif-note{ margin-top:2.4rem; }
+  .letter-moment{
+    display:grid; grid-template-areas:"copy photo";
+    grid-template-columns:minmax(0,1fr) min(42%, 260px);
+    column-gap:1.4rem; align-items:center;
+    margin-top:1.4rem;
+  }
+  .letter-moment:has(.snap.left){
+    grid-template-areas:"photo copy";
+    grid-template-columns:min(42%, 260px) minmax(0,1fr);
+  }
+  .letter-moment:has(.snap.portrait){
+    grid-template-columns:minmax(0,1fr) min(34%, 190px);
+  }
+  .letter-moment:has(.snap.portrait.left){
+    grid-template-columns:min(34%, 190px) minmax(0,1fr);
+  }
+  .letter-moment.sunsets{ display:block; }
+  .letter-copy{ grid-area:copy; }
+  .letter-copy .item-head{ margin-bottom:0.45rem; }
+  .snap{
+    grid-area:photo;
+    position:relative; margin:0; width:100%;
+    padding:0.5rem;
+    background:var(--bg); border:1px solid var(--line);
+    transform:rotate(var(--r, 0deg));
+  }
+  .snap img{ display:block; width:100%; height:auto; }
+  .snap.portrait img{ aspect-ratio:4 / 5; object-fit:cover; object-position:var(--focus, 50% 50%); }
+  .snap figcaption{ margin-top:0.5rem; font-family:'Fraunces'; font-style:italic; font-size:0.85rem; line-height:1.4; color:var(--muted); }
+  .snap.big{ width:min(78%, 360px); margin:1.2rem auto 0; }
+  .snap.taped::before{
+    content:""; position:absolute; top:-0.7rem; left:50%;
+    width:4rem; height:1.4rem; margin-left:-2rem;
+    background:var(--line); transform:rotate(-4deg);
+  }
+  .snap.pinned::before{
+    content:""; position:absolute; top:-0.3rem; left:50%;
+    width:8px; height:8px; margin-left:-4px; border-radius:50%;
+    background:var(--ink);
+  }
+  .letter-divider{ margin-top:2rem; text-align:center; font-size:0.85rem; color:var(--muted); }
+  .letter-end{ margin-top:2rem; padding-top:1.4rem; border-top:1px solid var(--line); }
+  .letter-sign{ margin-top:1rem; text-align:right; font-family:'Fraunces'; font-style:italic; font-size:1.35rem; }
+
+  @media (max-width:900px){
+    #hero{
+      grid-template-columns:1fr;
+      row-gap:2.4rem;
+      min-height:auto;
+      padding-bottom:4rem;
+    }
+    .hero-visual{
+      justify-self:center;
+      padding:0 0.8rem;
+      order:-1;
+    }
+    .hero-photo{
+      width:min(220px, 58vw);
+      height:min(220px, 58vw);
+    }
+    .hero-line-2{ max-width:18ch; }
+  }
+  @media (max-width:720px){
+    .case-grid{ grid-template-columns:1fr; }
+    .case-card.wide{ grid-column:span 1; }
+    .values{ grid-template-columns:1fr; }
+    .values li:nth-child(2){ padding-top:1.5rem; border-top:1px solid var(--line); }
+    nav{ padding:1.1rem 5vw; }
+    nav .brand{ font-size:0.92rem; }
+    nav .links{ gap:0.85rem; }
+    nav .links a{ font-size:0.82rem; }
+    .together-item .reveal{
+      position:static; display:none; width:auto; max-width:none;
+      margin-top:0.5rem; padding:0; background:none; color:var(--muted);
+      opacity:1; transform:none;
+    }
+    .together-item[aria-expanded="true"] .reveal{ display:block; }
+    .rh-topic{ max-width:41vw; }
+    .overlay{ padding:4.5rem 4.5vw; }
+    #letter.open .letter-sheet{ transform:none; }
+    .letter-moment,
+    .letter-moment:has(.snap.left),
+    .letter-moment:has(.snap.portrait),
+    .letter-moment:has(.snap.portrait.left){
+      display:flex; flex-direction:column; gap:0.7rem;
+      grid-template-areas:none; grid-template-columns:none;
+    }
+    .letter-moment .snap{ width:62%; }
+    .letter-moment:has(.snap.landscape) .snap{ width:88%; }
+    .snap.left{ margin:0 auto 0 0; }
+    .snap.right{ margin:0 0 0 auto; }
+    .snap.big{ width:88%; margin:0.8rem auto 0; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{ animation:none !important; transition:none !important; }
+    .case-card.has-thumb .case-media img{ transform:none !important; }
+    .hero-line-1, .hero-line-2, .envelope, .city{ opacity:1; transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+
+<nav>
+  <a href="#about" class="brand" id="brand-home" data-cursor="link">saisha handoo</a>
+  <div class="thought">saisha, currently thinking about: <span id="thought-word">venture debt</span></div>
+  <div class="links">
+    <a href="#about" data-nav="about" data-cursor="link">about</a>
+    <a href="#work" data-nav="work" data-cursor="link">works</a>
+    <a href="#" id="nav-rabbit" data-cursor="rabbit">rabbit holes</a>
+    <a href="#contact" data-nav="contact" data-cursor="link">contact</a>
+  </div>
+</nav>
+
+<div id="main-view">
+
+  <div class="based-in" id="about">
+    based in: <span id="cities-track"></span>
+  </div>
+
+  <section id="hero">
+    <div class="hero-lines">
+      <div class="hero-line-1">hi, i am saisha —</div>
+      <div class="hero-line-2">a product designer who notices what does not work and asks why.</div>
+      <button type="button" class="envelope" id="envelope" data-cursor="drag" aria-haspopup="dialog" aria-expanded="false" aria-controls="letter" aria-label="open a letter from saisha">
+        <span class="env" aria-hidden="true">
+          <svg class="env-back" viewBox="0 0 132 86"><path class="env-shape" d="M2.5 3.6 Q66 1.8 129.6 3.1 L129.1 83 Q66 84.8 3.1 83.3 Z"/></svg>
+          <span class="env-paper">
+            <svg viewBox="0 0 110 66"><path class="env-line" d="M12 14 Q40 12.5 70 14 M12 23 Q50 21.6 92 23.2 M12 32 Q38 30.8 62 32"/><text class="env-ink" x="80" y="36" font-size="11">♡</text></svg>
+          </span>
+          <svg class="env-front" viewBox="0 0 132 86">
+            <path class="env-shape" d="M3 31 Q34 45 66 58.5 Q98 45 129.3 30.5 L129.1 83 Q66 84.8 3.1 83.3 Z"/>
+            <path class="env-line" d="M3.4 82.6 L50 52 M128.6 82.4 L82 51.6 M80 64 q3 -2.5 6 0 t6 0 M80 69 q3 -2.5 6 0 t6 0"/>
+            <g transform="rotate(7 108 68)"><rect class="env-shape env-stamp" x="98" y="59" width="20" height="17"/><text class="env-ink" x="103.2" y="71.6" font-size="9">✿</text></g>
+            <text class="env-ink" x="12" y="75" font-size="9.5">for you</text>
+          </svg>
+          <svg class="env-flap" viewBox="0 0 132 56"><path class="env-shape" d="M2.5 3.6 Q66 1.8 129.6 3.1 Q98 28 68.5 51 Q66 52.8 63.5 51 Q33 28 2.5 3.6 Z"/><circle class="env-ink" cx="66" cy="47" r="6.5"/><text class="env-seal" x="62.4" y="50.4" font-size="8">✦</text></svg>
+        </span>
+        <span class="env-hint">open me <span class="env-arrow">→</span></span>
+      </button>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-photo">
+        <img src="assets/hero.jpg" alt="saisha handoo standing in a sunlit square" width="768" height="1024">
+      </div>
+      <div id="why-wrap"><div id="why-float">why?</div></div>
+    </div>
+  </section>
+
+  <section id="audience">
+    <div class="prompt">how are you here?</div>
+    <div class="tab-row">
+      <button class="tab-btn" data-tab="designer" data-cursor="drag">product designer</button>
+      <button class="tab-btn active" data-tab="recruiter" data-cursor="drag">recruiter</button>
+      <button class="tab-btn" data-tab="director" data-cursor="drag">design director</button>
+      <button class="tab-btn" data-tab="pm" data-cursor="drag">pm</button>
+      <button class="tab-btn" data-tab="engineer" data-cursor="drag">engineer</button>
+    </div>
+    <div id="tab-content"></div>
+  </section>
+
+  <section id="work">
+    <div class="section-head"><h2>selected work <span class="doodle" aria-hidden="true">✦</span></h2><div class="count">4 case studies</div></div>
+    <div class="case-grid">
+      <article class="case-card wide has-thumb" data-case="elucia" data-cursor="case" tabindex="0" role="button">
+        <div class="case-media">
+          <img src="assets/elucia.png" alt="green cloud character for the Elucia project">
+        </div>
+        <div class="case-copy">
+          <span class="tag">personal</span>
+          <span class="name no-lc">Elucia</span>
+          <span class="tagline">making an <span class="no-lc">AI</span>-powered learning experience that turns passive studying into active articulation</span>
+        </div>
+      </article>
+      <article class="case-card has-thumb" data-case="sweetvida" data-cursor="case" tabindex="0" role="button">
+        <div class="case-media">
+          <img src="assets/sweetvida.jpg" alt="layered strawberry desserts for the SweetVida project">
+        </div>
+        <div class="case-copy">
+          <span class="tag">systems design</span>
+          <span class="name no-lc">SweetVida</span>
+          <span class="tagline">turning an instagram bakery into an operating system.</span>
+        </div>
+      </article>
+      <article class="case-card" data-case="ux" data-cursor="case" tabindex="0" role="button">
+        <div class="bg-loop"></div>
+        <span class="card-stamp" aria-hidden="true">✿</span>
+        <span class="tag">ux research</span>
+        <span class="name">placeholder title</span>
+        <span class="tagline">consolidating four disconnected tools into one interaction model.</span>
+      </article>
+      <article class="case-card wide" data-case="ai" data-cursor="case" tabindex="0" role="button">
+        <div class="bg-loop"></div>
+        <span class="card-stamp" aria-hidden="true">⋆</span>
+        <span class="tag">ai product</span>
+        <span class="name">placeholder title</span>
+        <span class="tagline">an interface that made the model's confidence visible instead of hiding it.</span>
+      </article>
+    </div>
+    <div id="case-viewer"></div>
+  </section>
+
+  <section id="values">
+    <div class="section-head"><h2>what i design with</h2><div class="count">4 values <span class="doodle" aria-hidden="true">✿</span></div></div>
+    <ol class="values">
+      <li>
+        <h3 class="item-head"><span class="num">01</span>curiosity</h3>
+        <p>i default to asking why a thing is the way it is before i try to change it. most bad decisions survive because nobody re-asked the question.</p>
+      </li>
+      <li>
+        <h3 class="item-head"><span class="num">02</span>empathy</h3>
+        <p>not the poster kind. the kind that shows up when you actually listen to how someone works.</p>
+      </li>
+      <li>
+        <h3 class="item-head"><span class="num">03</span>systems thinking</h3>
+        <p>a screen is never just a screen. i try to see the whole thing, the people, the data, the edge cases, so fixing one part does not quietly break three others.</p>
+      </li>
+      <li>
+        <h3 class="item-head"><span class="num">04</span>experimentation</h3>
+        <p>i would rather test a rough idea this week than defend a polished one for a month. making something is usually the fastest way to find out where it is wrong.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="gift">
+    <div class="section-head"><h2>software, as a gift</h2><div class="count">a small tool, actually working</div></div>
+    <div class="col">
+      <p class="gift-lead">most portfolios ask you to look. this one gives you something to make.</p>
+      <p class="gift-sub">you do not need a good idea. you need a constraint.</p>
+    </div>
+    <div class="tool" id="giftTool">
+      <div class="tool-idle">
+        <p class="tool-hook">you do not need a good idea.<br>you need a constraint.</p>
+        <div><button type="button" class="btn" id="constraintBtn" data-cursor="drag">give me a constraint</button></div>
+      </div>
+      <div class="tool-result">
+        <div class="c-swap" id="constraintSwap" aria-live="polite">
+          <div class="c-label no-lc" id="constraintLabel">constraint 01</div>
+          <p class="c-text" id="constraintOut"></p>
+          <p class="c-invite">make something with it.</p>
+        </div>
+        <div class="c-actions">
+          <button class="c-link" id="anotherBtn" data-cursor="drag">another one →</button>
+          <button class="c-link quiet" id="copyBtn" data-cursor="link">copy constraint</button>
+        </div>
+        <p class="c-send-row"><button type="button" class="c-link quiet" id="sendOpen" data-cursor="link" aria-haspopup="dialog" aria-controls="send-overlay">made something? send it my way →</button></p>
+        <div class="c-received" id="received" role="status"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rabbitholes-preview">
+    <div class="section-head"><h2>rabbit holes i have gone down</h2><div class="count">grows over time <span class="doodle" aria-hidden="true">?</span></div></div>
+    <ul class="rh-preview-list">
+      <li>fermi's paradox</li>
+      <li>stoicism</li>
+      <li>dopamine reward pathways</li>
+      <li>the immortal jellyfish</li>
+      <li>and more…</li>
+    </ul>
+    <figure class="rh-journal">
+      <video class="loop-video" autoplay muted loop playsinline preload="auto" src="assets/rabbitholes/journal.mp4" aria-label="a little peek into my rabbit holes journal"></video>
+      <figcaption>a little peek into my rabbit holes journal :)</figcaption>
+    </figure>
+    <p class="rh-more">new topics get added as i think about them! <button type="button" class="text-btn" id="rh-more-link" data-cursor="rabbit">see the full field →</button></p>
+  </section>
+
+  <section id="contact">
+    <div class="section-head"><h2>if we worked together…</h2><div class="count">you would probably notice <span class="doodle" aria-hidden="true">♡</span></div></div>
+    <div class="together-row">
+      <button type="button" class="together-item" aria-expanded="false">as a designer<span class="reveal">i will question the thing everyone assumed.</span></button>
+      <button type="button" class="together-item" aria-expanded="false">as a teammate<span class="reveal">i will probably send you a figma link at an unreasonable hour.</span></button>
+      <button type="button" class="together-item" aria-expanded="false">as a pm<span class="reveal">i will ask what problem we are actually solving.</span></button>
+      <button type="button" class="together-item" aria-expanded="false">as an engineer<span class="reveal">i will come prepared with more than "can you make this happen?" 😭</span></button>
+    </div>
+    <p class="sub find-out">want to find out?</p>
+    <div class="cta-row">
+      <a class="talk" href="mailto:saisha.handoo@gmail.com" data-cursor="link">let us talk →</a>
+      <a class="sub" href="https://www.linkedin.com/in/saisha-handoo-0b7184260/" target="_blank" rel="noopener" data-cursor="link">linkedin</a>
+      <a class="sub" href="mailto:saisha.handoo@gmail.com" data-cursor="link">saisha.handoo@gmail.com</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026.</span>
+    <span>designed, built, and occasionally overthought by saisha <span class="doodle" aria-hidden="true">⋆</span></span>
+  </footer>
+
+</div>
+
+<!-- ============ RABBIT HOLES PAGE ============ -->
+<div id="rabbitholes-view">
+  <div class="rh-head">
+    <a href="#about" class="back-link" id="rh-back" data-cursor="link">← back</a>
+    <h1>things i have been curious about</h1>
+    <p>grows over time</p>
+  </div>
+  <div class="rh-field" id="rh-field"></div>
+</div>
+
+<div id="rh-detail-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="rhDTopic">
+  <div class="overlay-panel">
+    <div class="section-head"><h2 id="rhDTopic"></h2><button type="button" class="back-link" id="rhDClose" data-cursor="link">close ✕</button></div>
+    <p class="serif-note rh-d-q" id="rhDQ"></p>
+    <p class="rh-d-label">what i learned</p>
+    <p class="rh-d-body" id="rhDLearned"></p>
+  </div>
+</div>
+
+<div id="send-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="sendTitle">
+  <form class="overlay-panel" id="sendForm">
+    <div class="section-head"><h2 id="sendTitle">what did you make?</h2><button type="button" class="back-link" id="sendClose" data-cursor="link">close ✕</button></div>
+    <p class="c-label no-lc" id="sendNum"></p>
+    <p class="send-text" id="sendText"></p>
+    <label class="send-field">
+      <span>your name</span>
+      <input type="text" id="sendName" autocomplete="name" required>
+    </label>
+    <label class="send-field">
+      <span>your link</span>
+      <input type="text" id="sendLink" inputmode="url" autocomplete="url" placeholder="figma, github, a photo, anything" required>
+    </label>
+    <label class="send-field">
+      <span>anything you want to say?</span>
+      <textarea id="sendMsg" rows="2" placeholder="optional"></textarea>
+    </label>
+    <div class="send-actions">
+      <button type="submit" class="btn" data-cursor="drag">send it →</button>
+      <span class="send-note">opens your email app, already filled in.</span>
+    </div>
+  </form>
+</div>
+
+<div id="letter" class="overlay" role="dialog" aria-modal="true" aria-labelledby="letterTitle">
+  <article class="overlay-panel letter-sheet">
+    <div class="section-head"><h2 id="letterTitle">hi, i am saisha. <span class="serif-note" aria-hidden="true">✦</span></h2><button type="button" class="back-link" id="letterClose" data-cursor="link">fold it back up ✕</button></div>
+
+    <p>i have lived in five countries so far, and every move changed how i see things a little.</p>
+    <p class="letter-route">india <span>→</span> china <span>→</span> indonesia <span>→</span> thailand <span>→</span> the united states</p>
+    <p>moving between them made me curious about how differently people see, use, and experience the same things. the same crosswalk, the same app, the same breakfast, understood in completely different ways. that curiosity is a big part of why i ended up in product design.</p>
+    <p>i like noticing the little things that do not work, asking why they work that way, and thinking about how they could feel different.</p>
+    <p>right now i am doing my master's in product management and design at northeastern university. mostly, though, i am a lifelong learner. i genuinely like following a question wherever it leads me.</p>
+
+    <p class="serif-note">a few little things about me <span aria-hidden="true">↓</span></p>
+
+    <section class="letter-moment">
+      <div class="letter-copy">
+        <h3 class="item-head"><span class="num" aria-hidden="true">✿</span>photography</h3>
+        <p>i love photography, especially of places that make me stop for a second. this is one of them.</p>
+      </div>
+      <figure class="snap landscape right taped" style="--r:2deg">
+        <img src="assets/letter/dal-lake.jpg" alt="a shikara boat gliding across a misty dal lake" width="1024" height="768" loading="lazy">
+        <figcaption>one of my favorites — dal lake, kashmir</figcaption>
+      </figure>
+    </section>
+
+    <section class="letter-moment">
+      <div class="letter-copy">
+        <h3 class="item-head"><span class="num" aria-hidden="true">♡</span>baking</h3>
+        <p>i love baking, especially when i can make something from scratch and then immediately eat it. waiting for things to cool down is not really my strength.</p>
+      </div>
+      <figure class="snap portrait left pinned" style="--r:-3deg">
+        <img src="assets/letter/banana-bread.jpg" alt="two loaves of chocolate chip banana bread on a wooden board" width="576" height="1024" loading="lazy">
+        <figcaption>current favorite: banana bread</figcaption>
+      </figure>
+    </section>
+
+    <section class="letter-moment">
+      <div class="letter-copy">
+        <h3 class="item-head"><span class="num" aria-hidden="true">→</span>the gym</h3>
+        <p>i have become really consistent with going to the gym, and i genuinely enjoy it now. i am still a little surprised about that.</p>
+      </div>
+      <figure class="snap portrait right taped" style="--r:3deg; --focus:30% 42%">
+        <img src="assets/letter/gym.jpg" alt="saisha and a friend taking a mirror selfie at the gym" width="576" height="1024" loading="lazy">
+        <figcaption>somehow, this became one of my favorite routines</figcaption>
+      </figure>
+    </section>
+
+    <section class="letter-moment">
+      <div class="letter-copy">
+        <h3 class="item-head"><span class="num" aria-hidden="true">✿</span>hiking</h3>
+        <p>i love hiking and being outside, ideally somewhere with a view that makes the climb worth it.</p>
+      </div>
+      <figure class="snap landscape left pinned" style="--r:-1.5deg">
+        <img src="assets/letter/hiking.jpg" alt="saisha walking up a hillside trail on a sunny day" width="1024" height="768" loading="lazy">
+        <figcaption>somewhere on the way up</figcaption>
+      </figure>
+    </section>
+
+    <p class="letter-divider" aria-hidden="true">⋆ &nbsp; ✦ &nbsp; ⋆</p>
+
+    <section class="letter-moment sunsets">
+      <h3 class="item-head"><span class="num" aria-hidden="true">✦</span>sunsets</h3>
+      <p>and i love chasing sunsets. if you are ever walking with me around golden hour, we are probably stopping.</p>
+      <figure class="snap big taped" style="--r:-1deg">
+        <img src="assets/letter/sunset.jpg" alt="the sun setting over the ocean from a sandy beach" width="768" height="1024" loading="lazy">
+        <figcaption>always stopping for the sunset <span aria-hidden="true">♡</span></figcaption>
+      </figure>
+    </section>
+
+    <div class="letter-end">
+      <p>anyway, that is a little bit about me.<br>thanks for opening this.</p>
+      <p class="letter-sign">— saisha</p>
+    </div>
+  </article>
+</div>
+
+<script>
+  /* ========== CUSTOM CURSOR ========== */
+  const cursorDot = document.getElementById('cursor-dot');
+  const cursorMap = { link:'→', rabbit:'?', case:'↗', drag:'+' };
+  document.addEventListener('mousemove', (e) => {
+    cursorDot.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%,-50%)`;
+    const el = e.target.closest('[data-cursor]');
+    const type = el ? el.dataset.cursor : null;
+    if(type){
+      cursorDot.classList.add('grow');
+      cursorDot.textContent = cursorMap[type] || '';
+    } else {
+      cursorDot.classList.remove('grow');
+      cursorDot.textContent = '';
+    }
+  });
+
+  /* ========== NAV THOUGHT CYCLER ========== */
+  const thoughts = ["venture debt","the fermi paradox","why onboarding fails","stoicism","dopamine loops","the immortal jellyfish","utilitarianism vs. deontology","agi timelines","the double-slit experiment"];
+  let ti = 0;
+  const thoughtEl = document.getElementById('thought-word');
+  setInterval(() => {
+    thoughtEl.classList.add('fade');
+    setTimeout(() => {
+      ti = (ti + 1) % thoughts.length;
+      thoughtEl.textContent = thoughts[ti];
+      thoughtEl.classList.remove('fade');
+    }, 300);
+  }, 7000);
+
+  /* ========== BASED IN — LOAD ANIMATION ========== */
+  const cityNames = ["kashmir","jakarta","shanghai","delhi","bangkok","worcester","nyc","dc","boston"];
+  const track = document.getElementById('cities-track');
+  let d = 250;
+  cityNames.forEach((c) => {
+    const span = document.createElement('span');
+    span.className = c === 'boston' ? 'city current' : 'city';
+    span.textContent = c;
+    track.appendChild(span);
+    setTimeout(() => span.classList.add('show'), d);
+    d += 550;
+  });
+
+  /* ========== "WHY?" MAGNETIC DRIFT ========== */
+  const whyWrap = document.getElementById('why-wrap');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function startLoopVideos(root){
+    (root || document).querySelectorAll('.loop-video').forEach((video) => {
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.removeAttribute('controls');
+      if(reduceMotion){
+        video.pause();
+        video.currentTime = 0;
+        return;
+      }
+      const play = () => { video.play().catch(() => {}); };
+      if(video.readyState >= 2) play();
+      else video.addEventListener('canplay', play, { once:true });
+      const watch = new IntersectionObserver((entries) => {
+        entries.forEach((en) => { if(en.isIntersecting) play(); else video.pause(); });
+      }, { threshold:0.2 });
+      watch.observe(video);
+    });
+  }
+  startLoopVideos();
+  let tx = 0, ty = 0, wx = 0, wy = 0, drifting = false;
+  function driftWhy(){
+    wx += (tx - wx) * 0.06;
+    wy += (ty - wy) * 0.06;
+    whyWrap.style.transform = `translate(${wx.toFixed(2)}px, ${wy.toFixed(2)}px)`;
+    drifting = Math.abs(tx - wx) > 0.1 || Math.abs(ty - wy) > 0.1;
+    if(drifting) requestAnimationFrame(driftWhy);
+  }
+  if(!reduceMotion){
+    document.addEventListener('mousemove', (e) => {
+      tx = (e.clientX - window.innerWidth / 2) * 0.028;
+      ty = (e.clientY - window.innerHeight / 2) * 0.028;
+      if(!drifting){
+        drifting = true;
+        requestAnimationFrame(driftWhy);
+      }
+    });
+  }
+
+  /* ========== AUDIENCE TABS ========== */
+  const tabContent = {
+    designer: `<p>you are probably here to see how i think, not just what i shipped. start with "selected work" below. each case study runs overview → solution → discover → empathize → ideate → prototype → reflection, which is in that order on purpose.</p>`,
+    recruiter: `<p>you probably got here from an application.</p>
+      <p>so, hi.</p>
+      <p>i am saisha. i care about thoughtful products, curious questions, and making things that people actually want to use.</p>
+      <p>the work is below. my actual contact information is below that.</p>`,
+    director: `<p>i care about the thinking behind the pixels.</p>
+      <p>what did we notice? what did we question? what changed along the way?</p>
+      <p>the work below shows how i get there.</p>`,
+    pm: `<p>i care about the part before the pixels.</p>
+      <p>why this problem? why this user? what are we actually trying to change?</p>
+      <p>i like getting into those questions early, before the solution starts looking too pretty to question.</p>`,
+    engineer: `<div class="code-editor no-lc">
+      <div class="code-body">
+        <div class="code-gutter" aria-hidden="true">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8</div>
+        <pre><code><span class="tok-cm">// how collaboration actually feels</span>
+<span class="tok-kw">const</span> <span class="tok-var">designer</span> <span class="tok-op">=</span> <span class="tok-p">{</span>
+  <span class="tok-prop">curiosity</span><span class="tok-p">:</span> <span class="tok-str">"high"</span><span class="tok-p">,</span>
+  <span class="tok-prop">empathy</span><span class="tok-p">:</span> <span class="tok-bool">true</span><span class="tok-p">,</span>
+  <span class="tok-prop">caffeine</span><span class="tok-p">:</span> <span class="tok-str">"situational"</span><span class="tok-p">,</span>
+  <span class="tok-prop">favorite_question</span><span class="tok-p">:</span> <span class="tok-str">"why?"</span><span class="tok-p">,</span>
+  <span class="tok-prop">collaboration</span><span class="tok-p">:</span> <span class="tok-p">[</span><span class="tok-str">"PM"</span><span class="tok-p">,</span> <span class="tok-str">"ENG"</span><span class="tok-p">,</span> <span class="tok-str">"DESIGN"</span><span class="tok-p">],</span>
+<span class="tok-p">};</span></code></pre>
+      </div>
+    </div>`
+  };
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContentEl = document.getElementById('tab-content');
+  function setTab(tab){
+    tabBtns.forEach(b => {
+      const on = b.dataset.tab === tab;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', on);
+    });
+    tabContentEl.innerHTML = tabContent[tab];
+  }
+  tabBtns.forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+  setTab('recruiter');
+
+  /* ========== CASE STUDIES ========== */
+  const paras = (...ps) => ps.map(p => `<p>${p}</p>`).join('');
+  const fig = (src, alt) => `<figure class="cv-fig"><a href="${src}" target="_blank" rel="noopener" data-cursor="case" aria-label="open larger: ${alt}"><img src="${src}" alt="${alt}" loading="lazy"></a></figure>`;
+  const videoFig = (src) => `<figure class="cv-fig cv-video"><video class="loop-video" autoplay muted loop playsinline preload="auto" src="${src}" aria-label="SweetVida overview"></video></figure>`;
+  const media = (...items) => `<div class="cv-media${items.length > 2 ? ' cv-feature' : ''}">${items.join('')}</div>`;
+  const cases = {
+    ai: {
+      title: "placeholder title: ai product",
+      built: "figma · cursor · claude · python",
+      steps: [
+        ["overview","placeholder context: an early-stage ai feature, ambiguous scope, three-month timeline. my role: lead product designer, working solo with one pm and two engineers."],
+        ["solution","placeholder solution: a lightweight interface that made the model's confidence visible instead of hiding it. trust went up because uncertainty was no longer a secret.", true],
+        ["discover","placeholder research: interviews surfaced that users did not distrust the ai's answers. they distrusted not knowing when to double-check them."],
+        ["empathize","placeholder synthesis: the anxiety was not about accuracy, it was about accountability: who is responsible if the model is wrong."],
+        ["ideate","placeholder exploration: tested five ways to expose confidence, from a numeric score to a plain-language caveat, before landing on the caveat."],
+        ["prototype","placeholder prototype: a low-fidelity figma flow tested with 8 users across two rounds, refined based on where they hesitated."],
+        ["reflection","placeholder reflection: transparency is a design material, not a disclaimer you bolt on at the end."]
+      ]
+    },
+    sweetvida: {
+      title: `<span class="no-lc">SweetVida</span>`,
+      built: "figma · canva · sublime · html · notion",
+      links: [
+        ["click to read the full report", "https://drive.google.com/file/d/1xq9fkOHKSv3RrCEdcT_VUD3-uahQV_Pc/view"],
+        ["click to view the user manual", "https://drive.google.com/file/d/1HWDDPaqATqVB_GTjxMACnJiarf4ngdIq/view"]
+      ],
+      steps: [
+        ["overview", paras(
+          `our friend evan has a bakery, sweetvida! sweetvida was mostly running through instagram. orders came through dms and stories, payments were scattered across venmo, cash app, and zelle, and there was no centralized place to keep track of everything. as the bakery grew, it became harder to keep up with orders, ingredients, and how much could actually be produced.`
+        ) + `<p><a class="cv-inline-link" href="https://www.instagram.com/sweetvidaaa/?hl=en" target="_blank" rel="noopener" data-cursor="link">sweetvida on instagram ↗</a></p>`,
+          false,
+          media(videoFig('assets/sweetvida/overview.mp4'))],
+        ["solution", paras(
+          `designed a full e-commerce and inventory management system for sweetvida!`,
+          `the idea was to really bring the pieces that were scattered across different platforms into one place to avoid confusion and delays. customers could browse the menu, place and track orders, and manage loyalty points, while sweetvida could manage orders, ingredients, employees, and business analytics from the other side.`
+        ), true,
+          media(fig('assets/sweetvida/trending-products.jpg', 'SweetVida owner home page showing trending products'))],
+        ["discover", paras(
+          `we started by looking at how sweetvida actually operated day to day.`,
+          `the biggest issue was not that there was no way to order. it was that everything was happening in different places. instagram handled the conversation, payment apps handled the money, and inventory was something that had to be tracked separately.`,
+          `we also found that sweetvida could produce around 100 units per working night, which made capacity another important part of the system! taking too many orders was a problem, but so was turning customers away when there was still room to produce.`
+        ), false,
+          media(
+            fig('assets/sweetvida/discover-festival.jpg', 'SweetVida instagram post about the first festival with a customer asking how much per order'),
+            fig('assets/sweetvida/discover-sweet-drop.jpg', 'SweetVida instagram sweet drop post explaining how to claim an order through dms')
+          )],
+        ["empathize", paras(
+          `we focused on two sides of the experience: the customer and the people actually running sweetvida.`,
+          `for customers, ordering needed to feel simple and give them visibility into their order after they placed it.`,
+          `for employees, the system needed to make active orders and ingredient levels easy to understand without adding another complicated process to their day.`,
+          `for evan, the system needed to give her a clearer picture of what was happening across orders, inventory, and sales without having to piece everything together herself and wasting time doing that.`
+        ), false,
+          media(
+            fig('assets/sweetvida/cart.png', 'SweetVida cart with order summary, reward points, and delivery details'),
+            fig('assets/sweetvida/menu-1.png', 'SweetVida menu display'),
+            fig('assets/sweetvida/menu-2.png', 'SweetVida menu display with edit controls and add new product')
+          )],
+        ["ideate", paras(
+          `we started mapping out what a centralized sweetvida system could actually look like.`,
+          `this led us to three main parts: the customer experience, the employee side, and an owner dashboard.`,
+          `customers could browse the menu, order, pay, view order history, and earn or use loyalty points. employees could manage active orders and see ingredient availability. evan could manage the menu and inventory, keep track of employees, and see sales and inventory data in one place.`,
+          `one of the ideas i especially liked was automated ingredient depletion. when an order is completed, the system uses the recipe information to automatically subtract the ingredients used. instead of someone having to manually update inventory every time, the system does it for them.`
+        ), false,
+          media(
+            fig('assets/sweetvida/ideate-erd.jpg', 'SweetVida entity relationship diagram connecting accounts, customers, employees, orders, payments, menu, recipes, and ingredients'),
+            fig('assets/sweetvida/ideate-dfd-ingredients.jpg', 'SweetVida level 1 data flow diagram for employee authentication, order management, and automated ingredient depletion'),
+            fig('assets/sweetvida/ideate-dfd-admin.jpg', 'SweetVida level 1 data flow diagram for owner authentication, menu and catalog management, and business analytics')
+          )],
+        ["prototype", paras(
+          `we turned the system into a working e-commerce experience with customer, employee, and owner flows.`,
+          `the customer side included the menu, checkout, order history, order status, and loyalty points.`,
+          `behind that, we built out the operational side with an active order queue, ingredient tracking, low inventory alerts, menu management, and business analytics.`,
+          `the final system was built using html, php, bootstrap, and sql, with the goal of making the system actually functional rather than just designing what it could look like.`
+        ) + `<div class="cv-explore">
+            <div class="cv-explore-label">early visual explorations</div>
+            ${paras(`before settling on the final direction, we explored a few different visual directions in canva to figure out what kind of look and feel made sense for sweetvida.`)}
+          </div>`, false,
+          `<div class="cv-media">
+            ${fig('assets/sweetvida/prototype-my-orders.png', 'SweetVida my orders page with order status and delivery date')}
+            <div class="cv-tiles">
+              <div class="cv-stack">
+                ${fig('assets/sweetvida/prototype-order-form.jpg', 'canva exploration of a place an order form')}
+                ${fig('assets/sweetvida/explore-payment.png', 'canva exploration of a payment method page')}
+                ${fig('assets/sweetvida/explore-menu.png', 'canva exploration of a menu page')}
+              </div>
+              <div class="cv-stack">
+                ${fig('assets/sweetvida/explore-thank-you.png', 'canva exploration of a payment confirmation page')}
+                ${fig('assets/sweetvida/explore-all-orders.png', 'canva exploration of an all orders table')}
+                ${fig('assets/sweetvida/explore-by-product.png', 'canva exploration of orders grouped by product')}
+              </div>
+            </div>
+          </div>`],
+        ["reflection", paras(
+          `i really loved how this one came together because it started with a pretty simple problem: everything was scattered.`,
+          `if i were doing it again, i would want to talk to more people than just evan. especially her customers. i think we made a lot of decisions from the business side, but hearing how customers actually want to browse, order, track, and interact with sweetvida could have changed parts of the experience.`,
+          `i also think we could have tested the system earlier with real users instead of waiting until later in the process. it would have been interesting to see where people got confused or what they expected to happen without us explaining it.`,
+          `another thing i learned was how much of product design is really about understanding what should be connected. the problem was not just “sweetvida needs a website.” it was that orders, payments, inventory, capacity, and customer information were all disconnected. once we started thinking about how those pieces affected each other, the system started making a lot more sense.`,
+          `overall, i liked that the final product was not just a prettier way to take orders. it was designed around how the business actually worked!`
+        ), false,
+          `<div class="cv-media cv-tall">${fig('assets/sweetvida/reflection-assembly.jpg', 'assembling rows of SweetVida strawberry dessert cups')}</div>`]
+      ]
+    },
+    ux: {
+      title: "placeholder title: ux-heavy",
+      built: "figma · miro · sql",
+      steps: [
+        ["overview","placeholder context: a research-heavy redesign of a core workflow used daily by a niche professional audience."],
+        ["solution","placeholder solution: consolidated four disconnected tools into a single interaction model built around how the work actually happens.", true],
+        ["discover","placeholder research: contextual inquiries revealed the real workflow bore little resemblance to the org chart it was designed around."],
+        ["empathize","placeholder synthesis: users had quietly built their own workarounds. the redesign started from those, not a blank page."],
+        ["ideate","placeholder exploration: co-design sessions with actual users generated more usable ideas than solo ideation ever did."],
+        ["prototype","placeholder prototype: a clickable prototype tested in the users' real environment, not a lab."],
+        ["reflection","placeholder reflection: the best research does not just validate a direction. it tells you which question you were asking wrong."]
+      ]
+    },
+    elucia: {
+      title: `<span class="no-lc">Elucia</span>`,
+      soon: true
+    }
+  };
+
+  const viewer = document.getElementById('case-viewer');
+  let stepObserver;
+
+  function attachStepObserver(){
+    if(stepObserver) stepObserver.disconnect();
+    stepObserver = new IntersectionObserver((entries) => {
+      entries.forEach(en => { if(en.isIntersecting) en.target.classList.add('in'); });
+    }, { threshold:0.15 });
+    document.querySelectorAll('.cv-step').forEach(s => stepObserver.observe(s));
+  }
+
+  function renderCase(key){
+    const data = cases[key];
+    if(!data) return;
+    if(data.soon){
+      viewer.innerHTML = `<button type="button" class="back-link cv-back" id="cvBack" data-cursor="link">← back to work</button>
+        <h3 class="cv-title">${data.title}</h3>
+        <div class="cv-soon">
+          <p class="serif-note">this content is…</p>
+          <p class="cv-soon-mark no-lc">COMING SOON</p>
+          <p>i am in progress of building my app :)</p>
+          <p>do you want to find more? <a href="#contact" id="cvSoonContact" data-cursor="link">contact me for more information!</a></p>
+        </div>`;
+      viewer.classList.add('open');
+      document.getElementById('cvBack').addEventListener('click', closeCase);
+      document.getElementById('cvSoonContact').addEventListener('click', (e) => {
+        e.preventDefault();
+        closeCase('contact');
+      });
+      viewer.scrollIntoView({behavior:'smooth', block:'start'});
+      return;
+    }
+    let html = `<button type="button" class="back-link cv-back" id="cvBack" data-cursor="link">← back to work</button><h3 class="cv-title">${data.title}</h3>`;
+    data.steps.forEach((s, i) => {
+      const [label, body, isSolution, extra] = s;
+      html += `<div class="cv-step${isSolution ? ' solution' : ''}">
+        <div class="cv-text">
+          <div class="step-label"><span class="n">${String(i+1).padStart(2,'0')}</span>${label}</div>
+          <div class="step-body">${body}</div>
+        </div>
+        ${extra || ''}
+      </div>`;
+    });
+    if(data.links){
+      html += `<div class="cv-links">${data.links.map(([label, url]) =>
+        `<a href="${url}" target="_blank" rel="noopener" data-cursor="link">${label} ↗</a>`).join('')}</div>`;
+    }
+    html += `<div class="cv-built"><b>built with</b>: ${data.built}</div>`;
+    viewer.innerHTML = html;
+    viewer.classList.add('open');
+    document.getElementById('cvBack').addEventListener('click', closeCase);
+    attachStepObserver();
+    startLoopVideos(viewer);
+    viewer.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  function closeCase(to){
+    viewer.classList.remove('open');
+    viewer.innerHTML = '';
+    document.getElementById(to || 'work').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  document.querySelectorAll('.case-card').forEach(c => {
+    c.addEventListener('click', () => renderCase(c.dataset.case));
+    c.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        renderCase(c.dataset.case);
+      }
+    });
+  });
+
+  /* ========== GIFT TOOL ========== */
+  const constraints = [
+    "design something that only works when two people use it together.",
+    "design a product for someone who cannot read.",
+    "make an interface that disappears after one use.",
+    "design something that can only be used with one hand.",
+    "make a tool that gives the user less information.",
+    "design something that only works at night.",
+    "create an experience that takes exactly ten seconds.",
+    "design something with no onboarding.",
+    "make an interface with no buttons.",
+    "design something for someone who refuses notifications.",
+    "make something using only circles.",
+    "design a product that becomes harder to use the more you use it.",
+    "make something that cannot be optimized.",
+    "design something that requires the user to ask another person for help.",
+    "create a useful product that does only one thing.",
+    "design something that changes depending on how many people are using it.",
+    "design a tool that only speaks in questions.",
+    "make something that is better when it is slightly broken.",
+    "design an app you are only allowed to open once a week.",
+    "make an interface that uses sound instead of words.",
+    "design something for a stranger you will never meet.",
+    "make a map of a place that does not exist.",
+    "design something that works without a screen.",
+    "make a tool that forgets everything at midnight.",
+    "design something that asks the user to slow down.",
+    "make an interface that uses only three words.",
+    "design a product that is finished the moment the user leaves.",
+    "make something that only works when it is raining.",
+    "design a gift for someone who already has everything.",
+    "make something that can be understood in the dark.",
+    "design a way to say no without saying no.",
+    "make something that gets better when people disagree about it."
+  ];
+  const giftTool = document.getElementById('giftTool');
+  const swap = document.getElementById('constraintSwap');
+  const out = document.getElementById('constraintOut');
+  const label = document.getElementById('constraintLabel');
+  const copyBtn = document.getElementById('copyBtn');
+  const received = document.getElementById('received');
+  let bag = [];
+  let lastIndex = -1;
+
+  function nextIndex(){
+    if(!bag.length){
+      bag = constraints.map((_, i) => i);
+      for(let i = bag.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [bag[i], bag[j]] = [bag[j], bag[i]];
+      }
+      if(bag[bag.length - 1] === lastIndex) bag.unshift(bag.pop());
+    }
+    return bag.pop();
+  }
+  function writeConstraint(i){
+    lastIndex = i;
+    label.textContent = 'constraint ' + String(i + 1).padStart(2, '0');
+    out.textContent = constraints[i];
+    copyBtn.textContent = 'copy constraint';
+    giftTool.classList.remove('sent');
+    received.textContent = '';
+  }
+  function showConstraint(){
+    const i = nextIndex();
+    if(!giftTool.classList.contains('has-result')){
+      writeConstraint(i);
+      swap.classList.add('entering');
+      giftTool.classList.add('has-result');
+      void swap.offsetWidth;
+      swap.classList.remove('entering');
+      document.getElementById('anotherBtn').focus({ preventScroll:true });
+      return;
+    }
+    swap.classList.add('leaving');
+    setTimeout(() => {
+      writeConstraint(i);
+      swap.classList.remove('leaving');
+      swap.classList.add('entering');
+      void swap.offsetWidth;
+      swap.classList.remove('entering');
+    }, reduceMotion ? 0 : 260);
+  }
+  document.getElementById('constraintBtn').addEventListener('click', showConstraint);
+  document.getElementById('anotherBtn').addEventListener('click', showConstraint);
+
+  let copyTimer;
+  copyBtn.addEventListener('click', async () => {
+    const text = out.textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch(err){
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    copyBtn.textContent = 'copied. now go make something.';
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => { copyBtn.textContent = 'copy constraint'; }, 2400);
+  });
+
+  const sendOverlay = document.getElementById('send-overlay');
+  const sendForm = document.getElementById('sendForm');
+  const sendOpenBtn = document.getElementById('sendOpen');
+  const inbox = ['saisha.handoo', 'gmail.com'].join('@');
+
+  function openSend(){
+    document.getElementById('sendNum').textContent = label.textContent;
+    document.getElementById('sendText').textContent = out.textContent;
+    sendOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('sendName').focus({ preventScroll:true }), 60);
+  }
+  function closeSend(returnFocus = true){
+    sendOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+    if(returnFocus) sendOpenBtn.focus({ preventScroll:true });
+  }
+  sendOpenBtn.addEventListener('click', openSend);
+  document.getElementById('sendClose').addEventListener('click', () => closeSend());
+  sendOverlay.addEventListener('click', (e) => { if(e.target === sendOverlay) closeSend(); });
+
+  sendForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('sendName').value.trim();
+    const link = document.getElementById('sendLink').value.trim();
+    const message = document.getElementById('sendMsg').value.trim();
+    const body = [
+      `constraint:\n${label.textContent}: ${out.textContent}`,
+      `name:\n${name}`,
+      `link:\n${link}`,
+      `message:\n${message || '(none)'}`
+    ].join('\n\n');
+    const subject = `${label.textContent} — something i made`;
+    window.location.href = `mailto:${inbox}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    closeSend(false);
+    sendForm.reset();
+    received.innerHTML = '<p>received.</p><p class="quiet">now make another one.</p>';
+    void received.offsetWidth;
+    giftTool.classList.add('sent');
+    document.getElementById('anotherBtn').focus({ preventScroll:true });
+  });
+
+  /* ========== CONTACT — TOUCH FALLBACK ========== */
+  document.querySelectorAll('.together-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.setAttribute('aria-expanded', item.getAttribute('aria-expanded') !== 'true');
+    });
+  });
+
+  /* ========== NAV: RABBIT HOLES VIEW TOGGLE ========== */
+  const mainView = document.getElementById('main-view');
+  const rhView = document.getElementById('rabbitholes-view');
+  const overlay = document.getElementById('rh-detail-overlay');
+
+  function openRabbitHoles(){
+    mainView.style.display = 'none';
+    rhView.style.display = 'block';
+    window.scrollTo(0,0);
+    layoutRabbitHoles();
+    startRabbitHoles();
+  }
+  function closeRabbitHoles(){
+    overlay.classList.remove('open');
+    rhView.style.display = 'none';
+    mainView.style.display = 'block';
+  }
+  function goHome(e){
+    if(e) e.preventDefault();
+    closeRabbitHoles();
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  }
+  document.getElementById('brand-home').addEventListener('click', goHome);
+  document.getElementById('nav-rabbit').addEventListener('click', (e) => { e.preventDefault(); openRabbitHoles(); });
+  document.getElementById('rh-more-link').addEventListener('click', openRabbitHoles);
+  document.getElementById('rh-back').addEventListener('click', goHome);
+  document.querySelectorAll('[data-nav]').forEach(a => a.addEventListener('click', closeRabbitHoles));
+
+  /* ========== RABBIT HOLES FIELD ========== */
+  const rabbitHoles = [
+    { topic:"double-slit experiment", q:"why does watching change the result?", learned:"placeholder reflection: the observer effect in quantum mechanics, and why it gets misused as a metaphor for everything from consciousness to marketing." },
+    { topic:"the asset bubble", q:"why does everyone keep buying when everyone knows it is overpriced?", learned:"placeholder reflection: asset bubbles form when prices detach from underlying value and people keep buying because they believe someone else will pay even more. the strange part is that knowing a bubble exists does not necessarily make anyone want to leave it." },
+    { topic:"venture debt", q:"why do companies borrow money instead of raising equity?", learned:"placeholder reflection: venture debt lets founders extend runway without diluting ownership, at the cost of fixed repayment regardless of how the business performs." },
+    { topic:"the lipstick effect", q:"why do small luxuries survive a bad economy?", learned:"placeholder reflection: the idea that when money gets tight, people may trade expensive indulgences for smaller, more affordable ones. a reminder that consumption is not always about utility. sometimes it is about mood, identity, and feeling in control." },
+    { topic:"hyperinflation", q:"how does trust in money actually break?", learned:"placeholder reflection: money only works as long as everyone agrees to keep pretending. hyperinflation is what happens when they stop." },
+    { topic:"cultural relativism", q:"is 'normal' just where you are standing?", learned:"placeholder reflection: a framework that explains a lot and resolves less than it promises." },
+    { topic:"stoicism", q:"what is actually within my control?", learned:"placeholder reflection: less about suppressing feeling, more about sorting what is worth reacting to." },
+    { topic:"agi", q:"what happens after the last invention?", learned:"placeholder reflection: the timelines vary wildly, but the underlying question of what humans are for after that does not." },
+    { topic:"panpsychism", q:"what if mind is not only in brains?", learned:"placeholder reflection: the idea that consciousness might run all the way down, not just appear at the top. a useful way to question which things we treat as objects and which we treat as subjects." },
+    { topic:"confirmation bias", q:"why do i keep finding the answer i already wanted?", learned:"placeholder reflection: we notice the evidence that agrees with us and quietly skip the rest. most design arguments fail here long before they fail on taste." },
+    { topic:"occam's razor", q:"when is the simplest explanation actually the right one?", learned:"placeholder reflection: do not add a mechanism you do not need. in products, extra features are usually extra explanations." },
+    { topic:"neurogenesis", q:"can a finished brain still grow?", learned:"placeholder reflection: adult brains can still grow new neurons. a reminder that systems we call finished are often still changing." },
+    { topic:"the lost library of alexandria", q:"what did we lose when the library burned?", learned:"placeholder reflection: a collection that stood for everything a culture thought was worth keeping, and then it was gone. what we archive is a design decision too." }
+  ];
+  const rhField = document.getElementById('rh-field');
+  const coarsePointer = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+
+  rabbitHoles.forEach((r) => {
+    const el = document.createElement('div');
+    el.className = 'rh-topic';
+    el.dataset.cursor = 'rabbit';
+    el.tabIndex = 0;
+    el.setAttribute('role', 'button');
+    el.innerHTML = `<span class="rh-word">${r.topic}<span class="rh-mark" aria-hidden="true">?</span></span><span class="rh-question">${r.q}</span>`;
+    el.addEventListener('click', () => {
+      if(coarsePointer && !el.classList.contains('is-on')){
+        rhField.querySelectorAll('.rh-topic').forEach(t => t.classList.remove('is-on'));
+        el.classList.add('is-on');
+        return;
+      }
+      openDetail(r, el);
+    });
+    el.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        openDetail(r, el);
+      }
+    });
+    rhField.appendChild(el);
+  });
+
+  const rotations = [-3.2, 2.4, -1.6, 3.1, -2.8, 1.4, -3.6, 2.0, -1.1];
+  const rhBodies = [...rhField.querySelectorAll('.rh-topic')].map((el, i) => ({
+    el, x:0, y:0, vx:0, vy:0, w:0, h:0, held:false, rot:rotations[i % rotations.length]
+  }));
+  let rhPlaced = false;
+  let rhRaf = null;
+  let rhLast = 0;
+
+  function placeBody(b){
+    b.el.style.transform = `translate(${b.x}px, ${b.y}px) rotate(${b.rot}deg)`;
+  }
+
+  function layoutRabbitHoles(){
+    const mobile = window.innerWidth < 720;
+    const cols = mobile ? 2 : 3;
+    const rows = Math.ceil(rhBodies.length / cols);
+    const width = rhField.clientWidth;
+    const height = Math.max(window.innerHeight - rhField.getBoundingClientRect().top - 40, rows * (mobile ? 170 : 200));
+    rhField.style.height = height + 'px';
+    rhBodies.forEach(b => { b.w = b.el.offsetWidth; b.h = b.el.offsetHeight; });
+
+    if(!rhPlaced){
+      const jitter = [[0.05, 0.1], [0.55, 0], [0.95, 0.35], [0.2, 0.65], [0.7, 0.4], [1, 0.85], [0, 0.95], [0.45, 0.7], [0.85, 0.15]];
+      // Leaves room below the last row for the question that expands on hover.
+      const cellH = (height - 70) / rows;
+      const cellW = width / cols;
+      rhBodies.forEach((b, i) => {
+        const [jx, jy] = jitter[i % jitter.length];
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        b.x = col * cellW + jx * Math.max(0, cellW - b.w);
+        b.y = row * cellH + jy * Math.max(0, cellH - b.h);
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 22 + Math.random() * 20;
+        b.vx = Math.cos(angle) * speed;
+        b.vy = Math.sin(angle) * speed;
+      });
+      rhPlaced = true;
+    }
+    rhBodies.forEach(b => {
+      b.x = Math.max(0, Math.min(b.x, width - b.w));
+      b.y = Math.max(0, Math.min(b.y, height - b.h));
+      placeBody(b);
+    });
+  }
+
+  function resolveAxis(a, b, overlap, axis){
+    const v = 'v' + axis;
+    const s = Math.sign(b[axis] - a[axis]) || 1;
+    if(a.held){
+      b[axis] += s * overlap;
+      b[v] = s * Math.abs(b[v]);
+    } else if(b.held){
+      a[axis] -= s * overlap;
+      a[v] = -s * Math.abs(a[v]);
+    } else {
+      a[axis] -= s * overlap / 2;
+      b[axis] += s * overlap / 2;
+      if((a[v] - b[v]) * s > 0) [a[v], b[v]] = [b[v], a[v]];
+    }
+  }
+
+  function stepRabbitHoles(now){
+    if(rhView.style.display !== 'block'){ rhRaf = null; return; }
+    const dt = Math.min((now - rhLast) / 1000, 0.05);
+    rhLast = now;
+    if(!overlay.classList.contains('open')){
+      const W = rhField.clientWidth;
+      const H = rhField.clientHeight;
+      rhBodies.forEach(b => {
+        b.w = b.el.offsetWidth;
+        b.h = b.el.offsetHeight;
+        b.held = b.el.matches(':hover, :focus-visible, .is-on');
+        if(b.held) return;
+        b.x += b.vx * dt;
+        b.y += b.vy * dt;
+        if(b.x < 0){ b.x = 0; b.vx = Math.abs(b.vx); }
+        else if(b.x + b.w > W){ b.x = W - b.w; b.vx = -Math.abs(b.vx); }
+        if(b.y < 0){ b.y = 0; b.vy = Math.abs(b.vy); }
+        else if(b.y + b.h > H){ b.y = H - b.h; b.vy = -Math.abs(b.vy); }
+      });
+      for(let i = 0; i < rhBodies.length; i++){
+        for(let j = i + 1; j < rhBodies.length; j++){
+          const a = rhBodies[i], b = rhBodies[j];
+          if(a.held && b.held) continue;
+          const ox = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+          const oy = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+          if(ox <= 0 || oy <= 0) continue;
+          if(ox < oy) resolveAxis(a, b, ox, 'x');
+          else resolveAxis(a, b, oy, 'y');
+        }
+      }
+      rhBodies.forEach(placeBody);
+    }
+    rhRaf = requestAnimationFrame(stepRabbitHoles);
+  }
+
+  function startRabbitHoles(){
+    if(reduceMotion || rhRaf) return;
+    rhLast = performance.now();
+    rhRaf = requestAnimationFrame(stepRabbitHoles);
+  }
+
+  window.addEventListener('resize', () => {
+    if(rhView.style.display === 'block') layoutRabbitHoles();
+  });
+
+  const closeBtn = document.getElementById('rhDClose');
+  let lastTopic = null;
+  function openDetail(r, origin){
+    document.getElementById('rhDTopic').textContent = r.topic;
+    document.getElementById('rhDQ').textContent = r.q;
+    document.getElementById('rhDLearned').textContent = r.learned;
+    lastTopic = origin;
+    overlay.classList.add('open');
+    closeBtn.focus();
+  }
+  function closeDetail(){
+    overlay.classList.remove('open');
+    if(lastTopic) lastTopic.focus();
+  }
+  closeBtn.addEventListener('click', closeDetail);
+
+  /* ========== LETTER ========== */
+  const envelope = document.getElementById('envelope');
+  const letter = document.getElementById('letter');
+  const letterClose = document.getElementById('letterClose');
+  let letterTimer;
+
+  function openLetter(){
+    clearTimeout(letterTimer);
+    envelope.classList.add('is-open');
+    envelope.setAttribute('aria-expanded', 'true');
+    letterTimer = setTimeout(() => {
+      letter.scrollTop = 0;
+      letter.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      letterClose.focus({ preventScroll:true });
+    }, reduceMotion ? 0 : 560);
+  }
+  function closeLetter(){
+    clearTimeout(letterTimer);
+    letter.classList.remove('open');
+    document.body.style.overflow = '';
+    envelope.setAttribute('aria-expanded', 'false');
+    envelope.focus({ preventScroll:true });
+    letterTimer = setTimeout(() => envelope.classList.remove('is-open'), reduceMotion ? 0 : 450);
+  }
+  envelope.addEventListener('click', openLetter);
+  letterClose.addEventListener('click', closeLetter);
+  letter.addEventListener('click', (e) => { if(e.target === letter) closeLetter(); });
+
+  function trapFocus(e, container){
+    const items = [...container.querySelectorAll('button, a[href], input, textarea')].filter(el => el.offsetParent !== null);
+    if(!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  }
+
+  document.addEventListener('keydown', (e) => {
+    const openDialog = [letter, sendOverlay].find(d => d.classList.contains('open'));
+    if(e.key === 'Tab' && openDialog) trapFocus(e, openDialog);
+    if(e.key !== 'Escape') return;
+    if(letter.classList.contains('open')) closeLetter();
+    else if(sendOverlay.classList.contains('open')) closeSend();
+    else if(overlay.classList.contains('open')) closeDetail();
+  });
+</script>
+
+</body>
+</html>
