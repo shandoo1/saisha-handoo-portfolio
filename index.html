@@ -297,7 +297,7 @@
   .case-card.has-thumb .tag{ margin-bottom:0.25rem; }
   .case-card.has-thumb .tagline{
     position:absolute; left:1.6rem; bottom:calc(100% - 0.6rem);
-    width:max-content; max-width:min(280px, calc(100% - 3.2rem));
+    width:max-content; max-width:min(340px, calc(100% - 3.2rem));
     max-height:none; overflow:visible;
     background:var(--ink); color:var(--bg);
     font-size:0.82rem; line-height:1.45;
@@ -313,9 +313,13 @@
   }
   @media (hover:none), (pointer:coarse){
     .case-card.has-thumb .tagline{
-      position:static; width:auto; max-width:32ch;
-      background:none; color:var(--muted); padding:0; margin-top:0.35rem;
-      opacity:1; transform:none;
+      position:absolute; left:1.6rem; bottom:calc(100% - 0.6rem);
+      width:max-content; max-width:min(340px, calc(100% - 3.2rem));
+      background:var(--ink); color:var(--bg);
+      padding:0.6rem 0.85rem; margin-top:0;
+    }
+    .case-card.has-thumb:focus-visible .tagline{
+      opacity:1; transform:translateY(0);
     }
   }
   .case-card.wide.has-thumb .case-media{
@@ -799,6 +803,7 @@
     <a href="#work" data-nav="work" data-cursor="link">works</a>
     <a href="#" id="nav-rabbit" data-cursor="rabbit">rabbit holes</a>
     <a href="#contact" data-nav="contact" data-cursor="link">contact</a>
+    <a href="https://drive.google.com/file/d/1i_oObg4Hh9OAk8dO33wK9x9wuV8dppYD/view?usp=drive_link" target="_blank" rel="noopener" data-cursor="link">resume</a>
   </div>
 </nav>
 
@@ -850,7 +855,7 @@
   </section>
 
   <section id="work">
-    <div class="section-head"><h2>selected work <span class="doodle" aria-hidden="true">✦</span></h2><div class="count">4 case studies</div></div>
+    <div class="section-head"><h2>selected work <span class="doodle" aria-hidden="true">✦</span></h2><div class="count">3 case studies</div></div>
     <div class="case-grid">
       <article class="case-card wide has-thumb" data-case="elucia" data-cursor="case" tabindex="0" role="button">
         <div class="case-media">
@@ -872,19 +877,15 @@
           <span class="tagline">turning an instagram bakery into an operating system.</span>
         </div>
       </article>
-      <article class="case-card" data-case="ux" data-cursor="case" tabindex="0" role="button">
-        <div class="bg-loop"></div>
-        <span class="card-stamp" aria-hidden="true">✿</span>
-        <span class="tag">ux research</span>
-        <span class="name">placeholder title</span>
-        <span class="tagline">consolidating four disconnected tools into one interaction model.</span>
-      </article>
-      <article class="case-card wide" data-case="ai" data-cursor="case" tabindex="0" role="button">
-        <div class="bg-loop"></div>
-        <span class="card-stamp" aria-hidden="true">⋆</span>
-        <span class="tag">ai product</span>
-        <span class="name">placeholder title</span>
-        <span class="tagline">an interface that made the model's confidence visible instead of hiding it.</span>
+      <article class="case-card has-thumb" data-case="ttu" data-cursor="case" tabindex="0" role="button">
+        <div class="case-media">
+          <img src="assets/tech-turn-up.png" alt="Tech Turn Up workshop with a student at a 3D printer">
+        </div>
+        <div class="case-copy">
+          <span class="tag"><span class="no-lc">UX</span> research &amp; design</span>
+          <span class="name no-lc">Tech Turn Up</span>
+          <span class="tagline">a <span class="no-lc">UI/UX</span> makeathon where we designed a safe, engaging online ecosystem extension for <span class="no-lc">Tech Turn Up</span> students.</span>
+        </div>
       </article>
     </div>
     <div id="case-viewer"></div>
@@ -1227,19 +1228,6 @@
   const videoFig = (src) => `<figure class="cv-fig cv-video"><video class="loop-video" autoplay muted loop playsinline preload="auto" src="${src}" aria-label="SweetVida overview"></video></figure>`;
   const media = (...items) => `<div class="cv-media${items.length > 2 ? ' cv-feature' : ''}">${items.join('')}</div>`;
   const cases = {
-    ai: {
-      title: "placeholder title: ai product",
-      built: "figma · cursor · claude · python",
-      steps: [
-        ["overview","placeholder context: an early-stage ai feature, ambiguous scope, three-month timeline. my role: lead product designer, working solo with one pm and two engineers."],
-        ["solution","placeholder solution: a lightweight interface that made the model's confidence visible instead of hiding it. trust went up because uncertainty was no longer a secret.", true],
-        ["discover","placeholder research: interviews surfaced that users did not distrust the ai's answers. they distrusted not knowing when to double-check them."],
-        ["empathize","placeholder synthesis: the anxiety was not about accuracy, it was about accountability: who is responsible if the model is wrong."],
-        ["ideate","placeholder exploration: tested five ways to expose confidence, from a numeric score to a plain-language caveat, before landing on the caveat."],
-        ["prototype","placeholder prototype: a low-fidelity figma flow tested with 8 users across two rounds, refined based on where they hesitated."],
-        ["reflection","placeholder reflection: transparency is a design material, not a disclaimer you bolt on at the end."]
-      ]
-    },
     sweetvida: {
       title: `<span class="no-lc">SweetVida</span>`,
       built: "figma · canva · sublime · html · notion",
@@ -1323,11 +1311,15 @@
           `<div class="cv-media cv-tall">${fig('assets/sweetvida/reflection-assembly.jpg', 'assembling rows of SweetVida strawberry dessert cups')}</div>`]
       ]
     },
-    ux: {
-      title: "placeholder title: ux-heavy",
-      built: "figma · miro · sql",
+    ttu: {
+      title: `<span class="no-lc">Tech Turn Up</span>`,
+      built: "figma · claude code",
       steps: [
-        ["overview","placeholder context: a research-heavy redesign of a core workflow used daily by a niche professional audience."],
+        ["overview", paras(
+          `tech turn up is an after-school program for ages 8–16 exploring technology, robotics, ai, and entrepreneurship through hands-on learning. but when a session ends or a student cannot be in the room, the community and momentum can fade. as part of uxterps makeathon, team 16, me and madison explored how the experience of learning, belonging, and building together could extend beyond the room.`
+        ) + `<p><a class="cv-inline-link" href="https://www.techturnup.com/company-overview" target="_blank" rel="noopener" data-cursor="link"><span class="no-lc">Tech Turn Up</span>'s website ↗</a></p>`,
+          false,
+          media(fig('assets/ttu-overview.jpg', 'Tech Turn Up classroom session with students gathered around a mentor'))],
         ["solution","placeholder solution: consolidated four disconnected tools into a single interaction model built around how the work actually happens.", true],
         ["discover","placeholder research: contextual inquiries revealed the real workflow bore little resemblance to the org chart it was designed around."],
         ["empathize","placeholder synthesis: users had quietly built their own workarounds. the redesign started from those, not a blank page."],
