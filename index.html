@@ -345,16 +345,21 @@
   .cv-title{ font-family:inherit; font-weight:400; letter-spacing:0; font-size:clamp(1.7rem,3.6vw,2.6rem); margin-bottom:3rem; border-bottom:1px solid var(--line); padding-bottom:1.6rem; }
   .cv-title small{ display:block; font-size:0.55em; color:var(--muted); }
   .cv-step{
-    display:grid; grid-template-columns:minmax(0,1fr) min(36%, 23rem);
+    display:grid; grid-template-columns:minmax(0,1fr);
     column-gap:4vw; align-items:start;
     padding:2.4rem 0; border-top:1px solid var(--line);
     opacity:0; transform:translateY(24px);
     transition:opacity .6s ease, transform .6s ease;
   }
+  .cv-step:has(> .cv-media){
+    grid-template-columns:minmax(0,1fr) min(36%, 23rem);
+  }
+  .cv-step:has(.cv-fill){ align-items:stretch; }
   .cv-step.in{ opacity:1; transform:translateY(0); }
   .cv-step .step-label{ display:flex; gap:0.8rem; align-items:baseline; color:var(--muted); font-size:0.85rem; margin-bottom:0.7rem; }
   .cv-step .step-label .n{ font-family:'Fraunces'; font-style:italic; color:var(--ink); }
   .cv-step .step-body{ max-width:62ch; font-size:1.05rem; }
+  .cv-step:not(:has(> .cv-media)) .step-body{ max-width:none; }
   .cv-step.solution{ background:#fafafa; margin:0 -1.8rem; padding:2.4rem 1.8rem; border-top:none; }
   .cv-step.solution .step-label{ color:var(--ink); font-weight:600; }
   .cv-step .step-body p + p{ margin-top:1rem; }
@@ -374,6 +379,42 @@
   .cv-tiles{ grid-column:1 / -1; display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:1rem; align-items:start; }
   .cv-stack{ display:flex; flex-direction:column; gap:1rem; }
   .cv-tiles img, .cv-tall img{ max-height:none; }
+  .cv-fill{
+    display:flex; flex-direction:column; gap:1rem;
+    height:100%; min-height:0;
+  }
+  .cv-fill .cv-fig{
+    flex:1 1 0; min-height:12rem; grid-column:auto;
+    display:flex;
+  }
+  .cv-fill .cv-fig a{
+    display:flex; flex:1; min-height:0; width:100%;
+  }
+  .cv-fill .cv-fig img{
+    width:100%; height:100%; max-height:none;
+    object-fit:cover; background:var(--ink);
+  }
+  .cv-fill .cv-video{
+    flex:1 1 0; min-height:18rem;
+    display:flex;
+    background:var(--ink);
+  }
+  .cv-fill .cv-video video{
+    width:100%; height:100%; max-height:none;
+    object-fit:cover; object-position:center;
+    background:var(--ink); pointer-events:none;
+  }
+  .cv-fill-photo{
+    align-self:start;
+    position:sticky; top:5.2rem;
+    height:auto;
+  }
+  .cv-fill-photo .cv-fig{
+    flex:0 0 auto; min-height:0;
+    aspect-ratio:4 / 3;
+  }
+  .cv-fill-photo .cv-fig a{ height:100%; }
+  .cv-fill-photo .cv-fig img{ object-fit:cover; }
   .cv-fig a:focus-visible{ outline:1px solid var(--ink); outline-offset:3px; }
   .cv-explore{
     margin-top:2.4rem; padding-top:1.8rem;
@@ -384,9 +425,115 @@
     margin-bottom:0.7rem;
   }
   .cv-explore p{ color:var(--muted); font-size:0.98rem; }
+  .cv-wide-video{
+    grid-column:1 / -1;
+    width:100%; max-width:52rem;
+    margin:1.8rem auto 0;
+  }
+  .cv-wide-video .cv-fig{ margin:0; }
+  .cv-wide-video video{
+    display:block; width:100%; height:auto; max-height:none;
+    object-fit:contain; background:var(--ink); pointer-events:none;
+    border:1px solid var(--line);
+  }
+  .cv-below{
+    display:grid; grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:1rem; margin-top:1.8rem;
+    grid-column:1 / -1;
+  }
+  .cv-below .cv-fig{ grid-column:auto; }
+  .cv-below img{
+    max-height:none; width:100%; height:auto;
+    object-fit:contain; background:var(--ink);
+  }
+  .cv-stats, .cv-voices{ grid-column:1 / -1; }
+  .cv-stats{
+    display:grid; grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:0;
+    margin-top:2rem; padding:1.6rem 0.4rem;
+    border:1px solid var(--line); border-radius:6px;
+  }
+  .cv-stat{ text-align:center; padding:0 1.1rem; }
+  .cv-stat + .cv-stat{ border-left:1px solid var(--line); }
+  .cv-stat-n{
+    display:block;
+    font-family:'Fraunces'; font-style:italic;
+    font-size:clamp(1.7rem, 3vw, 2.3rem);
+    line-height:1.1;
+  }
+  .cv-stat-l{
+    display:block; color:var(--muted);
+    font-size:0.82rem; margin-top:0.4rem;
+  }
+  .cv-voices{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:1.15rem 1.4rem;
+    margin-top:2.4rem; padding-bottom:0.4rem;
+    align-items:stretch;
+  }
+  .cv-voices-head{ grid-column:1 / -1; max-width:46rem; }
+  .cv-voices-head p:last-child{ color:var(--muted); font-size:0.98rem; }
+  .cv-voice{
+    position:relative;
+    margin:0; width:100%;
+    padding:1.25rem 1.35rem 1.25rem;
+    background:#fafafa;
+    border:1px solid var(--line);
+    border-radius:1.5rem 1.5rem 1.5rem 0.45rem;
+    opacity:0; transform:translateY(14px);
+    transition:opacity .55s ease, transform .55s ease;
+  }
+  .cv-voice::after{
+    content:"";
+    position:absolute; left:1.35rem; bottom:-5px;
+    width:10px; height:10px;
+    background:inherit;
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    transform:rotate(45deg);
+  }
+  .cv-voice blockquote{
+    margin:0; quotes:none;
+    font-family:'Inter', sans-serif; font-style:normal; font-weight:400;
+    font-size:1.02rem; line-height:1.5;
+  }
+  .cv-voice blockquote::before, .cv-voice blockquote::after{ content:none; }
+  .cv-voice figcaption{
+    margin-top:0.75rem;
+    color:var(--muted); font-size:0.76rem; letter-spacing:0.01em;
+  }
+  .cv-voice.lead{ grid-column:1 / -1; padding:1.45rem 1.55rem; }
+  .cv-voice.staff{
+    background:var(--ink); color:var(--bg);
+    border-color:var(--ink);
+    border-radius:1.5rem 1.5rem 0.45rem 1.5rem;
+  }
+  .cv-voice.staff::after{
+    left:auto; right:1.35rem;
+    border-color:var(--ink);
+  }
+  .cv-voice.staff figcaption{ color:rgba(255,255,255,0.55); }
+  .cv-step.in .cv-voice{ opacity:1; transform:none; }
+  .cv-step.in .cv-voice.lead{ transition-delay:.06s; }
+  .cv-step.in .cv-voice.s2{ transition-delay:.14s; }
+  .cv-step.in .cv-voice.s3{ transition-delay:.2s; }
+  .cv-step.in .cv-voice.st1{ transition-delay:.28s; }
+  .cv-step.in .cv-voice.st2{ transition-delay:.36s; }
   @media (max-width:720px){
-    .cv-step{ grid-template-columns:1fr; }
+    .cv-step, .cv-step:has(> .cv-media){ grid-template-columns:1fr; }
     .cv-media{ margin-top:1.6rem; }
+    .cv-fill{ height:auto; }
+    .cv-fill .cv-fig{ flex:none; min-height:0; }
+    .cv-fill .cv-fig img{ height:auto; object-fit:contain; background:#fafafa; }
+    .cv-fill-photo{ position:static; }
+    .cv-fill-photo .cv-fig{ aspect-ratio:auto; }
+    .cv-below{ grid-template-columns:1fr; }
+    .cv-stats{ grid-template-columns:1fr; padding:0.4rem 1rem 1.1rem; }
+    .cv-stat{ padding:1.1rem 0 0.2rem; }
+    .cv-stat + .cv-stat{ border-left:0; border-top:1px solid var(--line); }
+    .cv-voices{ grid-template-columns:1fr; }
+    .cv-voice.lead{ grid-column:auto; }
   }
   .cv-links{
     display:flex; flex-wrap:wrap; gap:0.8rem 2rem;
@@ -788,6 +935,7 @@
     *{ animation:none !important; transition:none !important; }
     .case-card.has-thumb .case-media img{ transform:none !important; }
     .hero-line-1, .hero-line-2, .envelope, .city{ opacity:1; transform:none; }
+    .cv-voice{ opacity:1; transform:none; }
   }
 </style>
 </head>
@@ -1225,8 +1373,9 @@
   /* ========== CASE STUDIES ========== */
   const paras = (...ps) => ps.map(p => `<p>${p}</p>`).join('');
   const fig = (src, alt) => `<figure class="cv-fig"><a href="${src}" target="_blank" rel="noopener" data-cursor="case" aria-label="open larger: ${alt}"><img src="${src}" alt="${alt}" loading="lazy"></a></figure>`;
-  const videoFig = (src) => `<figure class="cv-fig cv-video"><video class="loop-video" autoplay muted loop playsinline preload="auto" src="${src}" aria-label="SweetVida overview"></video></figure>`;
+  const videoFig = (src, label='case study video') => `<figure class="cv-fig cv-video"><video class="loop-video" autoplay muted loop playsinline preload="auto" src="${src}" aria-label="${label}"></video></figure>`;
   const media = (...items) => `<div class="cv-media${items.length > 2 ? ' cv-feature' : ''}">${items.join('')}</div>`;
+  const mediaFit = (...items) => `<div class="cv-media cv-fill">${items.join('')}</div>`;
   const cases = {
     sweetvida: {
       title: `<span class="no-lc">SweetVida</span>`,
@@ -1240,7 +1389,7 @@
           `our friend evan has a bakery, sweetvida! sweetvida was mostly running through instagram. orders came through dms and stories, payments were scattered across venmo, cash app, and zelle, and there was no centralized place to keep track of everything. as the bakery grew, it became harder to keep up with orders, ingredients, and how much could actually be produced.`
         ) + `<p><a class="cv-inline-link" href="https://www.instagram.com/sweetvidaaa/?hl=en" target="_blank" rel="noopener" data-cursor="link">sweetvida on instagram ↗</a></p>`,
           false,
-          media(videoFig('assets/sweetvida/overview.mp4'))],
+          media(videoFig('assets/sweetvida/overview.mp4', 'SweetVida overview'))],
         ["solution", paras(
           `designed a full e-commerce and inventory management system for sweetvida!`,
           `the idea was to really bring the pieces that were scattered across different platforms into one place to avoid confusion and delays. customers could browse the menu, place and track orders, and manage loyalty points, while sweetvida could manage orders, ingredients, employees, and business analytics from the other side.`
@@ -1316,16 +1465,90 @@
       built: "figma · claude code",
       steps: [
         ["overview", paras(
-          `tech turn up is an after-school program for ages 8–16 exploring technology, robotics, ai, and entrepreneurship through hands-on learning. but when a session ends or a student cannot be in the room, the community and momentum can fade. as part of uxterps makeathon, team 16, me and madison explored how the experience of learning, belonging, and building together could extend beyond the room.`
+          `tech turn up is an after-school program for ages 8–16 exploring technology, robotics, ai, and entrepreneurship through hands-on learning. but when a session ends, the community and momentum can fade. during uxterps' 24-hour makeathon, team 16, madison and i explored how learning, belonging, and building together could extend beyond the room.`
         ) + `<p><a class="cv-inline-link" href="https://www.techturnup.com/company-overview" target="_blank" rel="noopener" data-cursor="link"><span class="no-lc">Tech Turn Up</span>'s website ↗</a></p>`,
           false,
-          media(fig('assets/ttu-overview.jpg', 'Tech Turn Up classroom session with students gathered around a mentor'))],
-        ["solution","placeholder solution: consolidated four disconnected tools into a single interaction model built around how the work actually happens.", true],
-        ["discover","placeholder research: contextual inquiries revealed the real workflow bore little resemblance to the org chart it was designed around."],
-        ["empathize","placeholder synthesis: users had quietly built their own workarounds. the redesign started from those, not a blank page."],
-        ["ideate","placeholder exploration: co-design sessions with actual users generated more usable ideas than solo ideation ever did."],
-        ["prototype","placeholder prototype: a clickable prototype tested in the users' real environment, not a lab."],
-        ["reflection","placeholder reflection: the best research does not just validate a direction. it tells you which question you were asking wrong."]
+          mediaFit(fig('assets/ttu-overview.jpg', 'Tech Turn Up classroom session with students gathered around a mentor'))],
+        ["solution", paras(
+          `madison and i designed both student and staff views for a safe, gamified online extension of tech turn up. the student experience was built around creative quests, small-group circles, lessons, and ways to stay connected beyond in-person sessions. the staff experience focused on centralized lesson sharing and moderation tools, with flagged activity, cooldowns, audit history, and quick intervention options.`,
+          `we prioritized a complete, connected experience over breadth: a session <span class="no-lc">PIN</span> login, clear learning steps, community features, and safety controls that were easy for staff to access. within the 24-hour makeathon, we translated real conversations into a high-fidelity prototype that reflected tech turn up's community-first culture. our team placed 3rd out of 25 teams at the uxterps makeathon.`
+        ), true,
+          mediaFit(
+            fig('assets/ttu-solution-dashboard.png', 'Tech Turn Up staff dashboard with active circles and a student progress heatmap'),
+            fig('assets/ttu-solution-upload.png', 'Tech Turn Up lesson upload screen with file drop, tags, and interactive type')
+          )],
+        ["discover", paras(
+          `we started by listening.`,
+          `we conducted in-person interviews with 8 students and spoke with tech turn up staff to understand what kept students engaged, what made them feel part of a community, and what happened when sessions ended. rather than jumping straight into features, we asked about their experiences, frustrations, and hopes for the program.`,
+          `the pattern became clear: tech turn up created a hands-on, close-knit learning environment, but that sense of connection was difficult to carry beyond the room. students wanted to keep building, exploring, and sharing ideas, while staff needed a more centralized way to support the community.`
+        ), false,
+          `<div class="cv-stats" role="group" aria-label="research snapshot">
+            <div class="cv-stat"><span class="cv-stat-n no-lc">08</span><span class="cv-stat-l">student voices heard</span></div>
+            <div class="cv-stat"><span class="cv-stat-n no-lc">10</span><span class="cv-stat-l">staff questions asked</span></div>
+            <div class="cv-stat"><span class="cv-stat-n no-lc">100%</span><span class="cv-stat-l">in-person research</span></div>
+          </div>`],
+        ["empathize", paras(
+          `the problem was not a lack of content. it was losing momentum. we looked beyond what students wanted to do and focused on how they wanted to feel: encouraged, connected, and capable of turning their ideas into something real. one student asked, “will our ideas become real things or are they just ideas?” another wanted words of encouragement that made them feel supported.`,
+          `staff brought a different but equally important perspective. they wanted a more centralized experience and raised questions about privacy, oversight, and student safety. these conversations helped us see that extending the community online was not just about keeping students busy. it was about preserving the encouragement and belonging of tech turn up while giving staff the visibility to support them.`
+        ), false,
+          `<div class="cv-voices">
+            <div class="cv-voices-head">
+              <div class="cv-explore-label">what stayed with us.</div>
+              <p>we listened for what students and staff needed to feel, do, and trust.</p>
+            </div>
+            <figure class="cv-voice lead">
+              <blockquote>“will our ideas become real things or are they just ideas?”</blockquote>
+              <figcaption>ttu student · in-person interview</figcaption>
+            </figure>
+            <figure class="cv-voice s2">
+              <blockquote>“want words of encouragement like hey king, you're doing amazing.”</blockquote>
+              <figcaption>ttu student · in-person interview</figcaption>
+            </figure>
+            <figure class="cv-voice s3">
+              <blockquote>“losing gives them determination. have something to do, an objective. entertain.”</blockquote>
+              <figcaption>ttu student · in-person interview</figcaption>
+            </figure>
+            <figure class="cv-voice staff st1">
+              <blockquote>“centralized everything. i need to go everywhere right now. i want it embedded.”</blockquote>
+              <figcaption>ttu staff member · in-person interview</figcaption>
+            </figure>
+            <figure class="cv-voice staff st2">
+              <blockquote>“how do i know it's not an ai? who's watching them?”</blockquote>
+              <figcaption>ttu staff member · in-person interview</figcaption>
+            </figure>
+          </div>`],
+        ["ideate", paras(
+          `we explored how the online experience could feel like a natural continuation of tech turn up rather than a separate learning platform. our direction centered on two ideas: giving students a reason to keep creating together, and giving staff a clear way to guide and protect that experience.`,
+          `with only 24 hours to design, we prioritized one core student journey and the staff tools needed to support it. we focused on a feasible prototype over a long list of features, using the interviews to guide our decisions and keeping safety, community, and the program's existing culture at the center.`
+        ), false,
+          mediaFit(
+            fig('assets/ttu-ideate-staff.jpg', 'notebook sketch of the staff dashboard, lesson upload, and student grid'),
+            fig('assets/ttu-ideate-student.jpg', 'notebook sketch of student home, chat, lessons, profile, and kalostype entry')
+          )],
+        ["prototype", paras(
+          `we focused on designing both sides of the experience: the student space where learning and community could continue, and the staff space where that community could be supported safely.`,
+          `we translated our research into a connected set of screens, from the student dashboard, lessons, and creative quests to group interactions and the staff dashboard, lesson uploads, and moderation controls. every screen had to serve a purpose within the larger ecosystem, rather than exist as an isolated feature.`,
+          `after the makeathon ended, we had additional time to revisit and polish parts of the design. we refined the visual details and interactions, using the opportunity to push the prototype further beyond what we could accomplish during the initial sprint. screens at the bottom.`,
+          `the result was a high-fidelity prototype that communicated both the student experience and the operational needs behind it, built around a simple idea: students should be able to keep building, while staff should feel equipped to support them.`
+        ), false,
+          `<div class="cv-wide-video">${videoFig('assets/ttu-prototype.mp4', 'Tech Turn Up prototype walkthrough, looping')}</div>
+          <div class="cv-below">
+            ${fig('assets/ttu-prototype-dashboard.png', 'iterated student dashboard with team, leaderboard, mentor feedback, and stats')}
+            ${fig('assets/ttu-prototype-quests.png', 'iterated lesson screen with quest cards to choose from')}
+            ${fig('assets/ttu-prototype-quest.png', 'iterated color story quest with steps, color picking, and reflect and teach')}
+          </div>`],
+        ["reflection", paras(
+          `depth over breadth is a decision, not a compromise.`,
+          `we wanted to design far more screens, especially for the staff experience. there were more workflows to explore, edge cases to consider, and interactions we wanted to make tangible. with a fixed deadline, we had to decide what deserved our attention first. focusing on one core student journey while establishing the foundations of the staff experience taught me that a prototype does not need to show everything to communicate a product's direction.`,
+          `a convincing prototype is not the same as a validated experience.`,
+          `our decisions were grounded in real conversations with students and staff, but i wish we had been able to put the prototype back in front of students and watch them interact with it. would the quests feel motivating? would the group experience feel natural? would students understand where to go next without guidance? those are questions that better-looking screens alone could not answer. given another iteration, i would prioritize quick usability sessions and use the findings to refine the experience.`,
+          `the less visible side of a product deserves just as much thought.`,
+          `it was easy to get excited about the student-facing experience, but designing the staff view made me think more carefully about what it takes to sustain a community. moderation, oversight, and intervention are not simply administrative features added at the end. they influence whether the experience can be trusted in the first place. i would have loved to develop these staff workflows further, particularly how staff move from identifying a concern to understanding and responding to it.`,
+          `constraints can sharpen the product, but they do not replace iteration.`,
+          `the 24-hour sprint forced us to prioritize, make decisions with incomplete information, and work toward a shared vision under pressure. the extra time we had afterward gave us room to polish parts of the design, but it also made me more aware of the difference between refining a screen and improving an experience. the next step would not just be adding more features. it would be testing our assumptions, strengthening the staff workflows, and learning from the people who would actually use the platform.`,
+          `we left the makeathon with third place out of 25 teams, but the more lasting takeaway for me was this: designing for a community means thinking beyond the moment someone opens a screen. it means considering what keeps them coming back, what helps them feel supported, and what makes the experience sustainable for everyone involved.`
+        ), false,
+          `<div class="cv-media cv-fill cv-fill-photo">${fig('assets/ttu-reflection-team.jpg', 'team 16 with mentors in front of a University of Maryland Info College backdrop')}${fig('assets/ttu-reflection-pitch.jpg', 'madison and saisha presenting the Tech Turn Up makeathon pitch')}</div>`]
       ]
     },
     elucia: {
