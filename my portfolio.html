@@ -322,11 +322,13 @@
       opacity:1; transform:translateY(0);
     }
   }
-  .case-card.wide.has-thumb .case-media{
+  .case-card.wide.has-thumb .case-media,
+  .case-card[data-case="elucia"].has-thumb .case-media{
     height:220px;
     background:#fff;
   }
-  .case-card.wide.has-thumb .case-media img{ object-fit:contain; }
+  .case-card.wide.has-thumb .case-media img,
+  .case-card[data-case="elucia"].has-thumb .case-media img{ object-fit:contain; }
   @media (hover:hover) and (pointer:fine){
     .case-card.has-thumb:hover .case-media img,
     .case-card.has-thumb:focus-visible .case-media img{
@@ -1003,16 +1005,26 @@
   </section>
 
   <section id="work">
-    <div class="section-head"><h2>selected work <span class="doodle" aria-hidden="true">✦</span></h2><div class="count">3 case studies</div></div>
+    <div class="section-head"><h2>selected work <span class="doodle" aria-hidden="true">✦</span></h2><div class="count">4 case studies</div></div>
     <div class="case-grid">
-      <article class="case-card wide has-thumb" data-case="elucia" data-cursor="case" tabindex="0" role="button">
+      <article class="case-card has-thumb" data-case="elucia" data-cursor="case" tabindex="0" role="button">
         <div class="case-media">
           <img src="assets/elucia.png" alt="green cloud character for the Elucia project">
         </div>
         <div class="case-copy">
           <span class="tag">personal</span>
           <span class="name no-lc">Elucia</span>
-          <span class="tagline">making an <span class="no-lc">AI</span>-powered learning experience that turns passive studying into active articulation</span>
+          <span class="tagline">making an <span class="no-lc">AI</span>-powered learning experience that turns passive studying into active articulation.</span>
+        </div>
+      </article>
+      <article class="case-card has-thumb" data-case="roomtobegin" data-cursor="case" tabindex="0" role="button">
+        <div class="case-media">
+          <img src="assets/room-to-begin.jpg" alt="gym floor with mural, machines, and open training space for Room to Begin">
+        </div>
+        <div class="case-copy">
+          <span class="tag">designing for belonging</span>
+          <span class="name no-lc">Room to Begin</span>
+          <span class="tagline">reimagining the gym experience to help beginners feel they belong before they feel confident.</span>
         </div>
       </article>
       <article class="case-card has-thumb" data-case="sweetvida" data-cursor="case" tabindex="0" role="button">
@@ -1554,6 +1566,11 @@
     elucia: {
       title: `<span class="no-lc">Elucia</span>`,
       soon: true
+    },
+    roomtobegin: {
+      title: `<span class="no-lc">Room to Begin</span>`,
+      soon: true,
+      soonNote: `this case study is on its way.`
     }
   };
 
@@ -1577,7 +1594,7 @@
         <div class="cv-soon">
           <p class="serif-note">this content is…</p>
           <p class="cv-soon-mark no-lc">COMING SOON</p>
-          <p>i am in progress of building my app :)</p>
+          <p>${data.soonNote || 'i am in progress of building my app :)'}</p>
           <p>do you want to find more? <a href="#contact" id="cvSoonContact" data-cursor="link">contact me for more information!</a></p>
         </div>`;
       viewer.classList.add('open');
